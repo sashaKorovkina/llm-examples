@@ -3,7 +3,6 @@ import base64
 import streamlit as st
 import requests
 from PIL import Image
-import pytesseract
 import fitz
 import io
 
