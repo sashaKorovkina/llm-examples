@@ -39,74 +39,6 @@ def encode_image(image_path):
 def save_uploaded_file(uploaded_file, target_path):
     with open(target_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
-
-
-# st.title("📝 File Q&A with Anthropic")
-#
-# uploaded_file = st.file_uploader("Choose an image or PDF...", type=["jpg", "jpeg", "png", "pdf"])
-#
-# if uploaded_file is None:
-#     st.write("What are you doing? No file was chosen")
-#
-# selected_model_name = st.selectbox("Select a model:", options=list(models.keys()))
-# model_engine = models[selected_model_name]
-#
-# st.write(f"Drivers, start your engine : {model_engine}")
-#
-# question = st.text_input(
-#     "Ask something about the article",
-#     placeholder="Can you give me a short summary?",
-#     disabled=not uploaded_file,
-# )
-#
-# file_extension = uploaded_file.name.split(".")[-1].lower()
-
-st.title("Image Explanation Chatbot!")
-
-uploaded_file = st.file_uploader("Choose an image or PDF...", type=["jpg", "jpeg", "png", "pdf"])
-
-if uploaded_file is None:
-    st.write("What are you doing? No file was chosen")
-
-selected_model_name = st.selectbox("Select a model:", options=list(models.keys()))
-model_engine = models[selected_model_name]
-
-st.write(f"Drivers, start your engine : {model_engine}")
-
-file_extension = uploaded_file.name.split(".")[-1].lower()
-if file_extension in ["jpg", "jpeg", "png"]:
-    image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded image", use_column_width=True)
-    save_uploaded_file(uploaded_file, 'temp.jpg')
-    base64_image = encode_image('temp.jpg')
-    send_image_to_openai(base64_image)
-
-if file_extension == "pdf":
-    pdf_bytes = uploaded_file.getvalue()
-    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-    pdf_images = []
-    for page_index in range(len(doc)):
-        page = doc[page_index]
-        pix = page.get_pixmap()
-        image_data = pix.tobytes()
-        pdf_image = Image.open(io.BytesIO(image_data))
-        pdf_images.append(pdf_image)
-
-    for index, pdf_image in enumerate(pdf_images):
-        st.image(pdf_image, caption="Uploaded PDF to image", use_column_width=True)
-        pdf_image.save(f'page_{index + 1}.png')
-
-        # send image to openai
-        # with open(f'page_{index + 1}.png', 'rb') as image_file:
-        #    base64_image = base64.b64encode(image_file.read()).decode('utf-8')
-        #    send_image_to_openai(base64_image)
-
-        # send text to openai
-        text = pytesseract.image_to_string(f'page_{index + 1}.png')
-        st.write(f"Text from Page {index + 1}:")
-        st.write(text)
-        send_text_to_openai(text, model_engine)
-
 def send_image_to_openai(base64_image):
     headers = {
       "Content-Type": "application/json",
@@ -167,3 +99,54 @@ def send_text_to_openai(text_content, model_engine):
             st.success("Explanation: {}".format(response.json()['choices'][0]['message']['content']))
         except Exception as e:
             st.error(f"Error: {e}")
+
+
+st.title("Image Explanation Chatbot!")
+
+uploaded_file = st.file_uploader("Choose an image or PDF...", type=["jpg", "jpeg", "png", "pdf"])
+
+if uploaded_file is None:
+    st.write("What are you doing? No file was chosen")
+
+selected_model_name = st.selectbox("Select a model:", options=list(models.keys()))
+model_engine = models[selected_model_name]
+
+st.write(f"Drivers, start your engine : {model_engine}")
+
+file_extension = uploaded_file.name.split(".")[-1].lower()
+
+if file_extension in ["jpg", "jpeg", "png"]:
+    image = Image.open(uploaded_file)
+    st.image(image, caption="Uploaded image", use_column_width=True)
+    save_uploaded_file(uploaded_file, 'temp.jpg')
+    base64_image = encode_image('temp.jpg')
+    send_image_to_openai(base64_image)
+
+
+if file_extension == "pdf":
+    pdf_bytes = uploaded_file.getvalue()
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    pdf_images = []
+    for page_index in range(len(doc)):
+        page = doc[page_index]
+        pix = page.get_pixmap()
+        image_data = pix.tobytes()
+        pdf_image = Image.open(io.BytesIO(image_data))
+        pdf_images.append(pdf_image)
+
+    for index, pdf_image in enumerate(pdf_images):
+        st.image(pdf_image, caption="Uploaded PDF to image", use_column_width=True)
+        pdf_image.save(f'page_{index + 1}.png')
+
+        # send image to openai
+        # with open(f'page_{index + 1}.png', 'rb') as image_file:
+        #    base64_image = base64.b64encode(image_file.read()).decode('utf-8')
+        #    send_image_to_openai(base64_image)
+
+        # send text to openai
+        text = pytesseract.image_to_string(f'page_{index + 1}.png')
+        st.write(f"Text from Page {index + 1}:")
+        st.write(text)
+        send_text_to_openai(text, model_engine)
+
+
