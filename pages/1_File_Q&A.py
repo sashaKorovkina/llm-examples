@@ -5,6 +5,19 @@ import requests
 from PIL import Image
 import fitz
 import io
+import pytesseract
+import shutil
+
+pytesseract.pytesseract.tesseract_cmd = None
+# search for tesseract binary in path
+@st.cache_resource
+def find_tesseract_binary() -> str:
+    return shutil.which("tesseract")
+
+# set tesseract binary path
+pytesseract.pytesseract.tesseract_cmd = find_tesseract_binary()
+if not pytesseract.pytesseract.tesseract_cmd:
+    st.error("Tesseract binary not found in PATH. Please install Tesseract.")
 
 with st.sidebar:
     api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
@@ -26,6 +39,73 @@ def encode_image(image_path):
 def save_uploaded_file(uploaded_file, target_path):
     with open(target_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
+
+
+# st.title("📝 File Q&A with Anthropic")
+#
+# uploaded_file = st.file_uploader("Choose an image or PDF...", type=["jpg", "jpeg", "png", "pdf"])
+#
+# if uploaded_file is None:
+#     st.write("What are you doing? No file was chosen")
+#
+# selected_model_name = st.selectbox("Select a model:", options=list(models.keys()))
+# model_engine = models[selected_model_name]
+#
+# st.write(f"Drivers, start your engine : {model_engine}")
+#
+# question = st.text_input(
+#     "Ask something about the article",
+#     placeholder="Can you give me a short summary?",
+#     disabled=not uploaded_file,
+# )
+#
+# file_extension = uploaded_file.name.split(".")[-1].lower()
+
+st.title("Image Explanation Chatbot")
+
+uploaded_file = st.file_uploader("Choose an image or PDF...", type=["jpg", "jpeg", "png", "pdf"])
+
+if uploaded_file is None:
+    st.write("What are you doing? No file was chosen")
+
+selected_model_name = st.selectbox("Select a model:", options=list(models.keys()))
+model_engine = models[selected_model_name]
+
+st.write(f"Drivers, start your engine : {model_engine}")
+
+file_extension = uploaded_file.name.split(".")[-1].lower()
+if file_extension in ["jpg", "jpeg", "png"]:
+    image = Image.open(uploaded_file)
+    st.image(image, caption="Uploaded image", use_column_width=True)
+    save_uploaded_file(uploaded_file, 'temp.jpg')
+    base64_image = encode_image('temp.jpg')
+    send_image_to_openai(base64_image)
+
+if file_extension == "pdf":
+    pdf_bytes = uploaded_file.getvalue()
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    pdf_images = []
+    for page_index in range(len(doc)):
+        page = doc[page_index]
+        pix = page.get_pixmap()
+        image_data = pix.tobytes()
+        pdf_image = Image.open(io.BytesIO(image_data))
+        pdf_images.append(pdf_image)
+
+    for index, pdf_image in enumerate(pdf_images):
+        st.image(pdf_image, caption="Uploaded PDF to image", use_column_width=True)
+        pdf_image.save(f'page_{index + 1}.png')
+
+        # send image to openai
+        # with open(f'page_{index + 1}.png', 'rb') as image_file:
+        #    base64_image = base64.b64encode(image_file.read()).decode('utf-8')
+        #    send_image_to_openai(base64_image)
+
+        # send text to openai
+        text = pytesseract.image_to_string(f'page_{index + 1}.png')
+        st.write(f"Text from Page {index + 1}:")
+        st.write(text)
+        send_text_to_openai(text, model_engine)
 
 def send_image_to_openai(base64_image):
     headers = {
@@ -62,57 +142,28 @@ def send_image_to_openai(base64_image):
         except Exception as e:
             st.error(f"Error: {e}")
 
-st.title("📝 File Q&A with Anthropic")
+def send_text_to_openai(text_content, model_engine):
+    headers = {
+      "Content-Type": "application/json",
+      "Authorization": f"Bearer {api_key}"
+    }
 
-uploaded_file = st.file_uploader("Choose an image or PDF...", type=["jpg", "jpeg", "png", "pdf"])
+    payload = {
+              "model": f"{model_engine}",
+              "messages": [
+                {
+                    "role": "user",
+                    "content": f"Summarise this text for me: ... {text_content}"
+                }
+              ],
+              "max_tokens": 100
+            }
 
-if uploaded_file is None:
-    st.write("What are you doing? No file was chosen")
+    if st.button("Get Explanation"):
+        try:
+            response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
 
-selected_model_name = st.selectbox("Select a model:", options=list(models.keys()))
-model_engine = models[selected_model_name]
-
-st.write(f"Drivers, start your engine : {model_engine}")
-
-question = st.text_input(
-    "Ask something about the article",
-    placeholder="Can you give me a short summary?",
-    disabled=not uploaded_file,
-)
-
-file_extension = uploaded_file.name.split(".")[-1].lower()
-
-if file_extension in ["jpg", "jpeg", "png"]:
-    image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded image", use_column_width=True)
-    save_uploaded_file(uploaded_file, 'temp.jpg')
-    base64_image = encode_image('temp.jpg')
-    send_image_to_openai(base64_image)
-
-if file_extension == "pdf":
-    pdf_bytes = uploaded_file.getvalue()
-    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-    pdf_images = []
-    for page_index in range(len(doc)):
-        page = doc[page_index]
-        pix = page.get_pixmap()
-        image_data = pix.tobytes()
-        pdf_image = Image.open(io.BytesIO(image_data))
-        pdf_images.append(pdf_image)
-# if uploaded_file and question and not anthropic_api_key:
-#     st.info("Please add your Anthropic API key to continue.")
-#
-# if uploaded_file and question and anthropic_api_key:
-#     article = uploaded_file.read().decode()
-#     prompt = f"""{anthropic.HUMAN_PROMPT} Here's an article:\n\n<article>
-#     {article}\n\n</article>\n\n{question}{anthropic.AI_PROMPT}"""
-#
-#     client = anthropic.Client(api_key=anthropic_api_key)
-#     response = client.completions.create(
-#         prompt=prompt,
-#         stop_sequences=[anthropic.HUMAN_PROMPT],
-#         model="claude-v1",  # "claude-2" for Claude 2 model
-#         max_tokens_to_sample=100,
-#     )
-#     st.write("### Answer")
-#     st.write(response.completion)
+            print(response.json())
+            st.success("Explanation: {}".format(response.json()['choices'][0]['message']['content']))
+        except Exception as e:
+            st.error(f"Error: {e}")
