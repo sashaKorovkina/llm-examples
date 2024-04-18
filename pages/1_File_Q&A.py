@@ -99,6 +99,7 @@ def send_text_to_openai(text_content, model_engine, unique_key):
             st.error(f"Error: {e}")
 
 
+
 st.title("Image Explanation Chatbot!")
 
 uploaded_file = st.file_uploader("Choose an image or PDF...", type=["jpg", "jpeg", "png", "pdf"])
@@ -110,6 +111,7 @@ selected_model_name = st.selectbox("Select a model:", options=list(models.keys()
 model_engine = models[selected_model_name]
 
 st.write(f"Drivers, start your engine : {model_engine}")
+user_question = st.text_input("Ask your question")
 
 file_extension = uploaded_file.name.split(".")[-1].lower()
 
@@ -134,16 +136,12 @@ if file_extension == "pdf":
     for page_index, pdf_image in enumerate(pdf_images):
         st.image(pdf_image, caption=f"Uploaded PDF to image Page {page_index + 1}", use_column_width=True)
 
-        # Convert image directly to text without saving to file
         text = pytesseract.image_to_string(pdf_image)
         st.write(f"Text from Page {page_index + 1}:")
         st.write(text)
 
-        # If you have multiple texts to process from each page (e.g., sections or paragraphs)
-        # Assuming texts_to_process is derived from each page's text, need clarification on how texts_to_process is populated
-        texts_to_process = [text]  # Example, assuming you split 'text' into multiple parts
+        texts_to_process = [text]
         for text_index, text_content in enumerate(texts_to_process):
-            # Call your function with a unique key combining both page and text indices
             send_text_to_openai(text_content, model_engine, f"button_key_{page_index}_{text_index}")
 
 
