@@ -168,7 +168,7 @@ if file_extension == "pdf":
 
     embeddings = OpenAIEmbeddings(openai_api_key = api_key)
     docsearch = FAISS.from_texts(texts, embeddings)
-    chain = load_qa_chain(OpenAI(), chain_type="stuff")
+    chain = load_qa_chain(OpenAI(openai_api_key = api_key), chain_type="stuff")
 
     # Create a text input box for the user to enter their query
     query = st.text_input("Enter your query:")
