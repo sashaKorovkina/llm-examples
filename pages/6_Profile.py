@@ -26,8 +26,24 @@ def initialize_firebase_app():
         # Attempt to get the app, which will throw an exception if it doesn't exist
         firebase_admin.get_app()
     except ValueError:
-        cred = st.secrets["firebase-auth"]
-        #cred = credentials.Certificate(r"C:\Users\sasha\PycharmProjects\elmento\elmento-secret.json")
+        # Access the secrets from Streamlit's secrets.toml file
+        secrets = st.secrets["firebase-auth"]
+
+        # Create a Firebase credential object from the JSON provided in secrets
+        cred = credentials.Certificate({
+            "type": secrets["type"],
+            "project_id": secrets["project_id"],
+            "private_key_id": secrets["private_key_id"],
+            "private_key": secrets["private_key"],
+            "client_email": secrets["client_email"],
+            "client_id": secrets["client_id"],
+            "auth_uri": secrets["auth_uri"],
+            "token_uri": secrets["token_uri"],
+            "auth_provider_x509_cert_url": secrets["auth_provider_x509_cert_url"],
+            "client_x509_cert_url": secrets["client_x509_cert_url"]
+        })
+
+        # Initialize the Firebase app with the created credential
         firebase_admin.initialize_app(cred)
 
 
