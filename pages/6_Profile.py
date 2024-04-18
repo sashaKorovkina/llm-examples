@@ -5,7 +5,21 @@ from firebase_admin import credentials
 from firebase_admin import auth
 from firebase_admin import firestore
 
-st.write("My cool secrets:", st.secrets["firebase-auth"]["type"]["project_id"]["private_key_id"]["private_key"]["client_email"]["client_id"]["auth_uri"]["token_uri"]["auth_provider_x509_cert_url"]["client_x509_cert_url"]["universe_domain"])
+# Access the secrets from Streamlit's secrets.toml file
+secrets = st.secrets["firebase-auth"]
+
+# Display the "My cool secrets:" string along with the values
+st.write("My cool secrets:", secrets["type"])
+st.write("Project ID:", secrets["project_id"])
+st.write("Private Key ID:", secrets["private_key_id"])
+st.write("Private Key:", secrets["private_key"])
+st.write("Client Email:", secrets["client_email"])
+st.write("Client ID:", secrets["client_id"])
+st.write("Auth URI:", secrets["auth_uri"])
+st.write("Token URI:", secrets["token_uri"])
+st.write("Auth Provider X509 Cert URL:", secrets["auth_provider_x509_cert_url"])
+st.write("Client X509 Cert URL:", secrets["client_x509_cert_url"])
+st.write("Universe Domain:", secrets["universe_domain"])
 
 def initialize_firebase_app():
     try:
