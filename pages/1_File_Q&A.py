@@ -7,6 +7,12 @@ import fitz
 import io
 import pytesseract
 import shutil
+from langchain.vectorstores import ElasticVectorSearch, Pinecone, Weaviate, FAISS
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTextSplitter
+import os
+from langchain.chains.question_answering import load_qa_chain
+from langchain.llms import OpenAI
 
 pytesseract.pytesseract.tesseract_cmd = None
 # search for tesseract binary in path
@@ -126,6 +132,8 @@ if file_extension == "pdf":
     pdf_bytes = uploaded_file.getvalue()
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
     pdf_images = []
+    pdf_texts = []  # List to store text from all pages
+
     for page_index in range(len(doc)):
         page = doc[page_index]
         pix = page.get_pixmap()
@@ -137,12 +145,20 @@ if file_extension == "pdf":
         st.image(pdf_image, caption=f"Uploaded PDF to image Page {page_index + 1}", use_column_width=True)
 
         text = pytesseract.image_to_string(pdf_image)
+        pdf_texts.append(text)  # Accumulate text from each page
+
         st.write(f"Text from Page {page_index + 1}:")
         st.write(text)
 
         texts_to_process = [text]
         for text_index, text_content in enumerate(texts_to_process):
             send_text_to_openai(text_content, model_engine, f"button_key_{page_index}_{text_index}")
+
+    # Print accumulated text at the bottom of the page
+    st.write("Accumulated Text from all Pages:")
+    accumulated_text = '\n'.join(pdf_texts)
+    st.write(accumulated_text)
+
 
 
 
