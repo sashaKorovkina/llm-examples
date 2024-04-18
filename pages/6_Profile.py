@@ -10,7 +10,7 @@ def initialize_firebase_app():
         # Attempt to get the app, which will throw an exception if it doesn't exist
         firebase_admin.get_app()
     except ValueError:
-        cred = credentials.Certificate(r"C:\Users\sasha\Downloads\elmeto-12de0-firebase-adminsdk-cyn5x-49d158cb07.json")
+        cred = credentials.Certificate(r"C:\Users\sasha\PycharmProjects\elmento-3\elmento-secret.json")
         firebase_admin.initialize_app(cred)
 
 
