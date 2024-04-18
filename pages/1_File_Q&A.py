@@ -177,7 +177,11 @@ if file_extension == "pdf":
     if query:
         # Assuming docsearch and chain are defined elsewhere in your code
         docs = docsearch.similarity_search(query)
-        chain.run(input_documents=docs, question=query)
+        result = chain.run(input_documents=docs, question=query)
+
+        # Display the result
+        st.write("Result:")
+        st.write(result)
 
 
 
