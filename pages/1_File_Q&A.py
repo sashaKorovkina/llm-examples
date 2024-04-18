@@ -104,8 +104,6 @@ def send_text_to_openai(text_content, model_engine, unique_key):
         except Exception as e:
             st.error(f"Error: {e}")
 
-
-
 st.title("Image Explanation Chatbot!")
 
 uploaded_file = st.file_uploader("Choose an image or PDF...", type=["jpg", "jpeg", "png", "pdf"])

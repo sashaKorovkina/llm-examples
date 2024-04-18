@@ -4,9 +4,10 @@ openai>=1.2
 duckduckgo-search
 anthropic>=0.3.0
 trubrics>=1.4.3
-streamlit-feedback
+sftreamlit-feedback
 pytesseract==0.3.8
 pyMuPDF==1.24.2
 pytest-shutil
 tiktoken
 faiss-cpu
+google-cloud-firestore
