@@ -5,6 +5,8 @@ from firebase_admin import credentials
 from firebase_admin import auth
 from firebase_admin import firestore
 
+st.write("My cool secrets:", st.secrets["firebase-auth"]["type"]["project_id"]["private_key_id"]["private_key"]["client_email"]["client_id"]["auth_uri"]["token_uri"]["auth_provider_x509_cert_url"]["client_x509_cert_url"]["universe_domain"])
+
 def initialize_firebase_app():
     try:
         # Attempt to get the app, which will throw an exception if it doesn't exist
