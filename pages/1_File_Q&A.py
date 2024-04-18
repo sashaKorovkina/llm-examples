@@ -61,7 +61,7 @@ def save_uploaded_file(uploaded_file, target_path):
 #
 # file_extension = uploaded_file.name.split(".")[-1].lower()
 
-st.title("Image Explanation Chatbot")
+st.title("Image Explanation Chatbot!")
 
 uploaded_file = st.file_uploader("Choose an image or PDF...", type=["jpg", "jpeg", "png", "pdf"])
 
