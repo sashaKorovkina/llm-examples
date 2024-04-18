@@ -138,10 +138,9 @@ if file_extension == "pdf":
     # Display gallery view
     for page_index, pdf_image in enumerate(pdf_images):
         # Display image as thumbnail with clickable link
-        st.image(pdf_image, caption=f"Page {page_index + 1}", use_column_width=True)
+        st.image(pdf_image, caption=f"Page {page_index + 1}", use_column_width=True, format='PNG')
         # Provide a clickable link to view the full page
         st.markdown(f"[View Page {page_index + 1}]({doc.url}#page={page_index + 1})")
-
 
         text = pytesseract.image_to_string(pdf_image)
         st.write(f"Text from Page {page_index + 1}:")
