@@ -18,61 +18,60 @@ def initialize_firebase_app():
 initialize_firebase_app()
 
 
-def app():
-    st.title('Welcome to :violet[MDX learn]')
+st.title('Welcome to :violet[MDX learn]')
 
-    if 'username' not in st.session_state:
-        st.session_state.username = ''
+if 'username' not in st.session_state:
+    st.session_state.username = ''
 
-    if 'useremail' not in st.session_state:
-        st.session_state.useremail = ''
+if 'useremail' not in st.session_state:
+    st.session_state.useremail = ''
 
-    def f():
-        try:
-            user = auth.get_user_by_email(email)
-            print(user.uid)
+def f():
+    try:
+        user = auth.get_user_by_email(email)
+        print(user.uid)
 
-            st.success('Login Successfully!')
+        st.success('Login Successfully!')
 
-            st.session_state.username = user.uid
-            st.session_state.useremail = user.email
+        st.session_state.username = user.uid
+        st.session_state.useremail = user.email
 
-            st.session_state.signout = True
-            st.session_state.signedout = True
-        except:
-            st.warning('Login Failed')
+        st.session_state.signout = True
+        st.session_state.signedout = True
+    except:
+        st.warning('Login Failed')
 
-    # sign out function
-    def t():
-        st.session_state.signout = False
-        st.session_state.signedout = False
-        st.session_state.username = ''
+# sign out function
+def t():
+    st.session_state.signout = False
+    st.session_state.signedout = False
+    st.session_state.username = ''
 
-    if 'signedout' not in st.session_state:
-        st.session_state.signedout = False
-    if 'signout' not in st.session_state:
-        st.session_state.signout = False
+if 'signedout' not in st.session_state:
+    st.session_state.signedout = False
+if 'signout' not in st.session_state:
+    st.session_state.signout = False
 
-    if not st.session_state['signedout']:
-        choice = st.selectbox('Login/Signup', ['Login', 'Sign Up'])
+if not st.session_state['signedout']:
+    choice = st.selectbox('Login/Signup', ['Login', 'Sign Up'])
 
-        if choice == 'Login':
-            email = st.text_input('Email Address')
-            password = st.text_input('Password', type='password')
+    if choice == 'Login':
+        email = st.text_input('Email Address')
+        password = st.text_input('Password', type='password')
 
-            st.button('Login', on_click=f)
-        else:
-            email = st.text_input('Email Address')
-            password = st.text_input('Password', type='password')
+        st.button('Login', on_click=f)
+    else:
+        email = st.text_input('Email Address')
+        password = st.text_input('Password', type='password')
 
-            username = st.text_input('Enter your unique username')
+        username = st.text_input('Enter your unique username')
 
-            if st.button('Create my account'):
-                user = auth.create_user(email=email, password=password, uid=username)
+        if st.button('Create my account'):
+            user = auth.create_user(email=email, password=password, uid=username)
 
-                st.success('Account created successfully!')
-                st.markdown('Please login using your email and password')
-                st.balloons()
+            st.success('Account created successfully!')
+            st.markdown('Please login using your email and password')
+            st.balloons()
 
     # if st.session_state.signout:
     #     st.text('Name: ' + st.session_state.username)
