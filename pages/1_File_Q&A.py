@@ -73,7 +73,7 @@ def send_image_to_openai(base64_image):
         except Exception as e:
             st.error(f"Error: {e}")
 
-def send_text_to_openai(text_content, model_engine):
+def send_text_to_openai(text_content, model_engine, unique_key):
     headers = {
       "Content-Type": "application/json",
       "Authorization": f"Bearer {api_key}"
@@ -90,12 +90,11 @@ def send_text_to_openai(text_content, model_engine):
               "max_tokens": 100
             }
 
-    if st.button("Get Explanation"):
+    if st.button("Get Explanation", key=unique_key):
         try:
             response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
-
-            print(response.json())
-            st.success("Explanation: {}".format(response.json()['choices'][0]['message']['content']))
+            explanation = response.json()['choices'][0]['message']['content']
+            st.success(f"Explanation: {explanation}")
         except Exception as e:
             st.error(f"Error: {e}")
 
@@ -121,7 +120,6 @@ if file_extension in ["jpg", "jpeg", "png"]:
     base64_image = encode_image('temp.jpg')
     send_image_to_openai(base64_image)
 
-
 if file_extension == "pdf":
     pdf_bytes = uploaded_file.getvalue()
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
@@ -133,19 +131,20 @@ if file_extension == "pdf":
         pdf_image = Image.open(io.BytesIO(image_data))
         pdf_images.append(pdf_image)
 
-    for index, pdf_image in enumerate(pdf_images):
-        st.image(pdf_image, caption="Uploaded PDF to image", use_column_width=True)
-        pdf_image.save(f'page_{index + 1}.png')
+    for page_index, pdf_image in enumerate(pdf_images):
+        st.image(pdf_image, caption=f"Uploaded PDF to image Page {page_index + 1}", use_column_width=True)
 
-        # send image to openai
-        # with open(f'page_{index + 1}.png', 'rb') as image_file:
-        #    base64_image = base64.b64encode(image_file.read()).decode('utf-8')
-        #    send_image_to_openai(base64_image)
-
-        # send text to openai
-        text = pytesseract.image_to_string(f'page_{index + 1}.png')
-        st.write(f"Text from Page {index + 1}:")
+        # Convert image directly to text without saving to file
+        text = pytesseract.image_to_string(pdf_image)
+        st.write(f"Text from Page {page_index + 1}:")
         st.write(text)
-        send_text_to_openai(text, model_engine)
+
+        # If you have multiple texts to process from each page (e.g., sections or paragraphs)
+        # Assuming texts_to_process is derived from each page's text, need clarification on how texts_to_process is populated
+        texts_to_process = [text]  # Example, assuming you split 'text' into multiple parts
+        for text_index, text_content in enumerate(texts_to_process):
+            # Call your function with a unique key combining both page and text indices
+            send_text_to_openai(text_content, model_engine, f"button_key_{page_index}_{text_index}")
+
 
 
