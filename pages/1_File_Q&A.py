@@ -117,7 +117,6 @@ selected_model_name = st.selectbox("Select a model:", options=list(models.keys()
 model_engine = models[selected_model_name]
 
 st.write(f"Drivers, start your engine : {model_engine}")
-user_question = st.text_input("Ask your question")
 
 file_extension = uploaded_file.name.split(".")[-1].lower()
 
@@ -157,7 +156,6 @@ if file_extension == "pdf":
     # Processing the text from the whole PDF
     st.write("Accumulated Text from all Pages:")
     accumulated_text = '\n'.join(pdf_texts)
-    st.write(accumulated_text)
 
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=512,
