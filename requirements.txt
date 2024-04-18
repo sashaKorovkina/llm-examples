@@ -11,3 +11,4 @@ pytest-shutil
 tiktoken
 faiss-cpu
 google-cloud-firestore
+firebase-admin
