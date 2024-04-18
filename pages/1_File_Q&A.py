@@ -166,7 +166,7 @@ if file_extension == "pdf":
     )
     texts = text_splitter.split_text(accumulated_text)
 
-    embeddings = OpenAIEmbeddings()
+    embeddings = OpenAIEmbeddings(openai_api_key = api_key)
     docsearch = FAISS.from_texts(texts, embeddings)
     chain = load_qa_chain(OpenAI(), chain_type="stuff")
 
