@@ -9,3 +9,4 @@ pytesseract==0.3.8
 pyMuPDF==1.24.2
 pytest-shutil
 tiktoken
+faiss-cpu
