@@ -126,8 +126,6 @@ if file_extension == "pdf":
     pdf_bytes = uploaded_file.getvalue()
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
     pdf_images = []
-
-    # Create thumbnails for each page
     for page_index in range(len(doc)):
         page = doc[page_index]
         pix = page.get_pixmap()
@@ -135,12 +133,8 @@ if file_extension == "pdf":
         pdf_image = Image.open(io.BytesIO(image_data))
         pdf_images.append(pdf_image)
 
-    # Display gallery view
     for page_index, pdf_image in enumerate(pdf_images):
-        # Display image as thumbnail with clickable link
-        st.image(pdf_image, caption=f"Page {page_index + 1}", use_column_width=True, format='PNG')
-        # Provide a clickable link to view the full page
-        st.markdown(f"[View Page {page_index + 1}]({doc.url}#page={page_index + 1})")
+        st.image(pdf_image, caption=f"Uploaded PDF to image Page {page_index + 1}", use_column_width=True)
 
         text = pytesseract.image_to_string(pdf_image)
         st.write(f"Text from Page {page_index + 1}:")
