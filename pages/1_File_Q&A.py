@@ -154,10 +154,30 @@ if file_extension == "pdf":
         for text_index, text_content in enumerate(texts_to_process):
             send_text_to_openai(text_content, model_engine, f"button_key_{page_index}_{text_index}")
 
-    # Print accumulated text at the bottom of the page
+    # Processing the text from the whole PDF
     st.write("Accumulated Text from all Pages:")
     accumulated_text = '\n'.join(pdf_texts)
     st.write(accumulated_text)
+
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=512,
+        chunk_overlap=32,
+        length_function=len,
+    )
+    texts = text_splitter.split_text(accumulated_text)
+
+    embeddings = OpenAIEmbeddings()
+    docsearch = FAISS.from_texts(texts, embeddings)
+    chain = load_qa_chain(OpenAI(), chain_type="stuff")
+
+    # Create a text input box for the user to enter their query
+    query = st.text_input("Enter your query:")
+
+    # Check if the query is not empty
+    if query:
+        # Assuming docsearch and chain are defined elsewhere in your code
+        docs = docsearch.similarity_search(query)
+        chain.run(input_documents=docs, question=query)
 
 
 
