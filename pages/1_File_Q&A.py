@@ -35,7 +35,6 @@ def encode_image(image_path):
   with open(image_path, "rb") as image_file:
     return base64.b64encode(image_file.read()).decode('utf-8')
 
-
 def save_uploaded_file(uploaded_file, target_path):
     with open(target_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
