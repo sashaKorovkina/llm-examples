@@ -5,8 +5,8 @@ from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTex
 from langchain.chains.question_answering import load_qa_chain
 from langchain.llms import OpenAI
 
-with st.sidebar:
-    api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
+# with st.sidebar:
+#     api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
 
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
@@ -14,6 +14,7 @@ if 'logged_in' not in st.session_state:
 st.title("Chat To AI")
 
 if st.session_state.logged_in:
+    api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
     if 'chat_file_name' in st.session_state:
         chat_file_name = st.session_state['chat_file_name']
         pdf_images = st.session_state['pdf_images']
