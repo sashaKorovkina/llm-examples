@@ -17,7 +17,13 @@ if 'chat_file_name' in st.session_state:
     st.write("Starting chat session FOR:", chat_file_name)
     st.write(pdf_texts)
     st.write("Accumulated Text from all Pages:")
-    accumulated_text = '\n'.join(pdf_texts)
+    if pdf_texts:
+        # Join the list of extracted texts into a single string with newline separators
+        accumulated_text = '\n'.join(pdf_texts)
+        st.write("Accumulated Text from all Pages:")
+        st.write(accumulated_text)
+    else:
+        st.write("No text was extracted from the PDF, or the list is empty.")
 
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=512,
