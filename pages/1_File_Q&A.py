@@ -15,7 +15,10 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.llms import OpenAI
 from streamlit.components.v1 import html
 
+# CHANGE FOR CLOUD DEPLOY!!!!!!!
 pytesseract.pytesseract.tesseract_cmd = None
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Users\sasha\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+
 # search for tesseract binary in path
 @st.cache_resource
 def find_tesseract_binary() -> str:
@@ -182,8 +185,22 @@ else:
                                 st.session_state['selected_file'] = uploaded_file.name
                                 st.image(img, caption=f"Selected PDF: {uploaded_file.name}", use_column_width=True)
                                 st.write(f"You have selected: {uploaded_file.name}")
-                                # Display the buttons under the image
                                 if st.button("Chat to AI", key=f"chat_{uploaded_file.name}"):
+                                    pdf_bytes = uploaded_file.getvalue()
+                                    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+                                    pdf_images = []
+                                    pdf_texts = []  # List to store text from all pages
+
+                                    for page_index in range(len(doc)):
+                                        page = doc[page_index]
+                                        pix = page.get_pixmap()
+                                        image_data = pix.tobytes()
+                                        pdf_image = Image.open(io.BytesIO(image_data))
+                                        pdf_images.append(pdf_image)
+
+                                        text = pytesseract.image_to_string(pdf_image)
+                                        pdf_texts.append(text)  # Accumulate text from each page
+
                                     st.session_state['chat_file_name'] = uploaded_file.name
                                     nav_page("chat_to_ai")
                                 if st.button("Get Summary", key=f"summary_{uploaded_file.name}"):
