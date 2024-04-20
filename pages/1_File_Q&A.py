@@ -218,17 +218,12 @@ else:
                             st.write(f"Unsupported file format for {uploaded_file.name}")
                     file_index += 1
 
-file_extension = uploaded_file.name.split(".")[-1].lower()
-
-if file_extension in ["jpg", "jpeg", "png"]:
-    image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded image", use_column_width=True)
-    save_uploaded_file(uploaded_file, 'temp.jpg')
-    base64_image = encode_image('temp.jpg')
-    send_image_to_openai(base64_image)
-
-
-
-
-
+# file_extension = uploaded_file.name.split(".")[-1].lower()
+#
+# if file_extension in ["jpg", "jpeg", "png"]:
+#     image = Image.open(uploaded_file)
+#     st.image(image, caption="Uploaded image", use_column_width=True)
+#     save_uploaded_file(uploaded_file, 'temp.jpg')
+#     base64_image = encode_image('temp.jpg')
+#     send_image_to_openai(base64_image)
 
