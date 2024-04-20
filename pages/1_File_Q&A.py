@@ -146,9 +146,7 @@ st.title("Image Explanation Chatbot!")
 
 uploaded_files = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"], accept_multiple_files=True)
 
-if not uploaded_files:
-    st.write("No file was chosen")
-else:
+if uploaded_files:
     selected_model_name = st.selectbox("Select a model:", options=list(models.keys()))
     model_engine = models[selected_model_name]
 
