@@ -14,7 +14,7 @@ if 'chat_file_name' in st.session_state:
     pdf_texts = st.session_state['pdf_texts']
     file_name = st.session_state['file_name']
     st.title(f"Chat about {chat_file_name}")
-    st.write("Starting chat session for:", chat_file_name)
+    st.write("Starting chat session FOR:", chat_file_name)
     st.write(pdf_texts)
     st.write("Accumulated Text from all Pages:")
     accumulated_text = '\n'.join(pdf_texts)
