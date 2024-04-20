@@ -15,41 +15,42 @@ st.title("Chat To AI")
 
 if st.session_state.logged_in:
     api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
-    if 'chat_file_name' in st.session_state:
-        chat_file_name = st.session_state['chat_file_name']
-        pdf_images = st.session_state['pdf_images']
-        pdf_texts = st.session_state['pdf_texts']
-        file_name = st.session_state['file_name']
-        st.write("Starting chat session FOR:", chat_file_name)
-        if pdf_texts:
-            # Join the list of extracted texts into a single string with newline separators
-            accumulated_text = '\n'.join(pdf_texts)
-        else:
-            st.write("No text was extracted from the PDF, or the list is empty.")
+    if api_key:
+        if 'chat_file_name' in st.session_state:
+            chat_file_name = st.session_state['chat_file_name']
+            pdf_images = st.session_state['pdf_images']
+            pdf_texts = st.session_state['pdf_texts']
+            file_name = st.session_state['file_name']
+            st.write("Starting chat session FOR:", chat_file_name)
+            if pdf_texts:
+                # Join the list of extracted texts into a single string with newline separators
+                accumulated_text = '\n'.join(pdf_texts)
+            else:
+                st.write("No text was extracted from the PDF, or the list is empty.")
 
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=512,
-            chunk_overlap=32,
-            length_function=len,
-        )
+            text_splitter = RecursiveCharacterTextSplitter(
+                chunk_size=512,
+                chunk_overlap=32,
+                length_function=len,
+            )
 
-        texts = text_splitter.split_text(accumulated_text)
+            texts = text_splitter.split_text(accumulated_text)
 
-        embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-        docsearch = FAISS.from_texts(texts, embeddings)
-        chain = load_qa_chain(OpenAI(openai_api_key=api_key), chain_type="stuff")
+            embeddings = OpenAIEmbeddings(openai_api_key=api_key)
+            docsearch = FAISS.from_texts(texts, embeddings)
+            chain = load_qa_chain(OpenAI(openai_api_key=api_key), chain_type="stuff")
 
-        # Create a text input box for the user to enter their query
-        query = st.text_input("Enter your query:")
+            # Create a text input box for the user to enter their query
+            query = st.text_input("Enter your query:")
 
-        # Check if the query is not empty
-        if query:
-            # Assuming docsearch and chain are defined elsewhere in your code
-            docs = docsearch.similarity_search(query)
-            result = chain.run(input_documents=docs, question=query)
+            # Check if the query is not empty
+            if query:
+                # Assuming docsearch and chain are defined elsewhere in your code
+                docs = docsearch.similarity_search(query)
+                result = chain.run(input_documents=docs, question=query)
 
-            # Display the result
-            st.write("Result:")
-            st.write(result)
+                # Display the result
+                st.write("Result:")
+                st.write(result)
 else:
     st.write('Please register or login to continue.')

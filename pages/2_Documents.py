@@ -148,7 +148,7 @@ if 'logged_in' not in st.session_state:
 st.title("Documents")
 # Page access control
 if st.session_state.logged_in:
-    api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
+    # api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
     uploaded_files = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"], accept_multiple_files=True)
 
     if uploaded_files:
