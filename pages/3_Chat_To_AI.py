@@ -20,7 +20,6 @@ if st.session_state.logged_in:
         pdf_images = st.session_state['pdf_images']
         pdf_texts = st.session_state['pdf_texts']
         file_name = st.session_state['file_name']
-        st.title(f"Chat about {chat_file_name}")
         st.write("Starting chat session FOR:", chat_file_name)
         if pdf_texts:
             # Join the list of extracted texts into a single string with newline separators
