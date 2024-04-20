@@ -48,6 +48,7 @@ def encode_image(image_path):
 def save_uploaded_file(uploaded_file, target_path):
     with open(target_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
+
 def send_image_to_openai(base64_image):
     headers = {
       "Content-Type": "application/json",
@@ -226,59 +227,7 @@ if file_extension in ["jpg", "jpeg", "png"]:
     base64_image = encode_image('temp.jpg')
     send_image_to_openai(base64_image)
 
-if file_extension == "pdf":
-    pdf_bytes = uploaded_file.getvalue()
-    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-    pdf_images = []
-    pdf_texts = []  # List to store text from all pages
 
-    for page_index in range(len(doc)):
-        page = doc[page_index]
-        pix = page.get_pixmap()
-        image_data = pix.tobytes()
-        pdf_image = Image.open(io.BytesIO(image_data))
-        pdf_images.append(pdf_image)
-
-    for page_index, pdf_image in enumerate(pdf_images):
-        st.image(pdf_image, caption=f"Uploaded PDF to image Page {page_index + 1}", use_column_width=True)
-
-        text = pytesseract.image_to_string(pdf_image)
-        pdf_texts.append(text)  # Accumulate text from each page
-
-        st.write(f"Text from Page {page_index + 1}:")
-        st.write(text)
-
-        texts_to_process = [text]
-        for text_index, text_content in enumerate(texts_to_process):
-            send_text_to_openai(text_content, model_engine, f"button_key_{page_index}_{text_index}")
-
-    # Processing the text from the whole PDF
-    st.write("Accumulated Text from all Pages:")
-    accumulated_text = '\n'.join(pdf_texts)
-
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=512,
-        chunk_overlap=32,
-        length_function=len,
-    )
-    texts = text_splitter.split_text(accumulated_text)
-
-    embeddings = OpenAIEmbeddings(openai_api_key = api_key)
-    docsearch = FAISS.from_texts(texts, embeddings)
-    chain = load_qa_chain(OpenAI(openai_api_key = api_key), chain_type="stuff")
-
-    # Create a text input box for the user to enter their query
-    query = st.text_input("Enter your query:")
-
-    # Check if the query is not empty
-    if query:
-        # Assuming docsearch and chain are defined elsewhere in your code
-        docs = docsearch.similarity_search(query)
-        result = chain.run(input_documents=docs, question=query)
-
-        # Display the result
-        st.write("Result:")
-        st.write(result)
 
 
 
