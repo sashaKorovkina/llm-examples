@@ -54,6 +54,7 @@ def f():
 
         st.session_state.signout = True
         st.session_state.signedout = True
+        st.session_state['logged_in'] = True
     except:
         st.warning('Login Failed')
 
@@ -74,8 +75,8 @@ if not st.session_state['signedout']:
     if choice == 'Login':
         email = st.text_input('Email Address')
         password = st.text_input('Password', type='password')
-
         st.button('Login', on_click=f)
+
     else:
         email = st.text_input('Email Address')
         password = st.text_input('Password', type='password')
