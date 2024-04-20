@@ -184,6 +184,7 @@ else:
                                 st.write(f"You have selected: {uploaded_file.name}")
                                 # Display the buttons under the image
                                 if st.button("Chat to AI", key=f"chat_{uploaded_file.name}"):
+                                    st.session_state['chat_file_name'] = uploaded_file.name
                                     nav_page("chat_to_ai")
                                 if st.button("Get Summary", key=f"summary_{uploaded_file.name}"):
                                     # Handle summary action here
