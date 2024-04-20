@@ -11,6 +11,8 @@ with st.sidebar:
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 
+st.title("Chat To AI")
+
 if st.session_state.logged_in:
     if 'chat_file_name' in st.session_state:
         chat_file_name = st.session_state['chat_file_name']
@@ -49,4 +51,5 @@ if st.session_state.logged_in:
             # Display the result
             st.write("Result:")
             st.write(result)
-
+else:
+    st.write('Please register or login to continue.')
