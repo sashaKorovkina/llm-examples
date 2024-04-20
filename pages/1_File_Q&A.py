@@ -106,7 +106,12 @@ def send_text_to_openai(text_content, model_engine, unique_key):
 
 st.title("Image Explanation Chatbot!")
 
-uploaded_file = st.file_uploader("Choose an image or PDF...", type=["jpg", "jpeg", "png", "pdf"])
+uploaded_files = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"], accept_multiple_files=True)
+if not uploaded_files:
+    st.write("No file was chosen")
+else:
+    # Process only the first uploaded file
+    uploaded_file = uploaded_files[0]
 
 if uploaded_file is None:
     st.write("What are you doing? No file was chosen")
