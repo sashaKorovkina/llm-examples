@@ -32,14 +32,14 @@ if not pytesseract.pytesseract.tesseract_cmd:
 # with st.sidebar:
 #     api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
 
-models = {
-    "GPT-4": "gpt-4",
-    "GPT-4 Turbo": "gpt-4-turbo",
-    "GPT-3.5 Turbo": "gpt-3.5-turbo",
-    "Code Davinci 002": "code-davinci-002",
-    "Text Davinci 003": "text-davinci-003",
-    "Text Davinci 004": "text-davinci-004",
-}
+# models = {
+#     "GPT-4": "gpt-4",
+#     "GPT-4 Turbo": "gpt-4-turbo",
+#     "GPT-3.5 Turbo": "gpt-3.5-turbo",
+#     "Code Davinci 002": "code-davinci-002",
+#     "Text Davinci 003": "text-davinci-003",
+#     "Text Davinci 004": "text-davinci-004",
+# }
 
 def encode_image(image_path):
   with open(image_path, "rb") as image_file:
@@ -152,8 +152,8 @@ if st.session_state.logged_in:
     uploaded_files = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"], accept_multiple_files=True)
 
     if uploaded_files:
-        selected_model_name = st.selectbox("Select a model:", options=list(models.keys()))
-        model_engine = models[selected_model_name]
+        # selected_model_name = st.selectbox("Select a model:", options=list(models.keys()))
+        # model_engine = models[selected_model_name]
 
         # CONTAINERIZED OUTPUT DISPLAY
         num_files = len(uploaded_files)
