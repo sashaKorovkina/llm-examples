@@ -21,7 +21,6 @@ if 'chat_file_name' in st.session_state:
         # Join the list of extracted texts into a single string with newline separators
         accumulated_text = '\n'.join(pdf_texts)
         st.write("Accumulated Text from all Pages:")
-        st.write(accumulated_text)
     else:
         st.write("No text was extracted from the PDF, or the list is empty.")
 
