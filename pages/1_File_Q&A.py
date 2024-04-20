@@ -116,10 +116,32 @@ else:
 if uploaded_file is None:
     st.write("What are you doing? No file was chosen")
 
+# MODEL SELECTOR
 selected_model_name = st.selectbox("Select a model:", options=list(models.keys()))
 model_engine = models[selected_model_name]
-
 st.write(f"Drivers, start your engine : {model_engine}")
+
+# CONTAINERIZED OUTPUT
+cols = st.columns(len(uploaded_files))  # Creates as many columns as there are files
+for i, uploaded_file in enumerate(uploaded_files):
+        file_extension = uploaded_file.name.split(".")[-1].lower()
+
+        if file_extension in ["jpg", "jpeg", "png"]:
+            with cols[i]:
+                image = Image.open(uploaded_file)
+                st.image(image, caption=f"Uploaded image: {uploaded_file.name}", use_column_width=True)
+                save_uploaded_file(uploaded_file, 'temp.jpg')
+                base64_image = encode_image('temp.jpg')
+                send_image_to_openai(base64_image)
+        elif file_extension == "pdf":
+            with cols[i]:
+                # Open the PDF file
+                doc = fitz.open(stream=uploaded_file.read(), filetype="pdf")
+                page = doc.load_page(0)  # Load the first page
+                pix = page.get_pixmap()  # Render page to an image
+                img = Image.open(pix.tobytes("png"))  # Convert the image bytes to an Image object
+                st.image(img, caption=f"First page of {uploaded_file.name}", use_column_width=True)
+                doc.close()
 
 file_extension = uploaded_file.name.split(".")[-1].lower()
 
