@@ -15,12 +15,9 @@ if 'chat_file_name' in st.session_state:
     file_name = st.session_state['file_name']
     st.title(f"Chat about {chat_file_name}")
     st.write("Starting chat session FOR:", chat_file_name)
-    st.write(pdf_texts)
-    st.write("Accumulated Text from all Pages:")
     if pdf_texts:
         # Join the list of extracted texts into a single string with newline separators
         accumulated_text = '\n'.join(pdf_texts)
-        st.write("Accumulated Text from all Pages:")
     else:
         st.write("No text was extracted from the PDF, or the list is empty.")
 
