@@ -34,7 +34,7 @@ def initialize_firebase_app():
 initialize_firebase_app()
 
 
-st.title('Welcome to :violet[MDX learn]')
+st.title('Welcome to :blue[Elmento]')
 
 if 'username' not in st.session_state:
     st.session_state.username = ''
