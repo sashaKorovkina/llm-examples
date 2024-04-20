@@ -19,31 +19,28 @@ if 'chat_file_name' in st.session_state:
     st.write("Accumulated Text from all Pages:")
     accumulated_text = '\n'.join(pdf_texts)
 
-#     text_splitter = RecursiveCharacterTextSplitter(
-#         chunk_size=512,
-#         chunk_overlap=32,
-#         length_function=len,
-#     )
-#
-#     texts = text_splitter.split_text(accumulated_text)
-#
-#     embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-#     docsearch = FAISS.from_texts(texts, embeddings)
-#     chain = load_qa_chain(OpenAI(openai_api_key=api_key), chain_type="stuff")
-#
-#     # Create a text input box for the user to enter their query
-#     query = st.text_input("Enter your query:")
-#
-#     # Check if the query is not empty
-#     if query:
-#         # Assuming docsearch and chain are defined elsewhere in your code
-#         docs = docsearch.similarity_search(query)
-#         result = chain.run(input_documents=docs, question=query)
-#
-#         # Display the result
-#         st.write("Result:")
-#         st.write(result)
-#     # Optionally, clear the session state if no longer needed after initiating the chat
-#     # del st.session_state['chat_file_name']
-# else:
-#     st.error("No file specified for the chat session.")
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=512,
+        chunk_overlap=32,
+        length_function=len,
+    )
+
+    texts = text_splitter.split_text(accumulated_text)
+
+    embeddings = OpenAIEmbeddings(openai_api_key=api_key)
+    docsearch = FAISS.from_texts(texts, embeddings)
+    chain = load_qa_chain(OpenAI(openai_api_key=api_key), chain_type="stuff")
+
+    # Create a text input box for the user to enter their query
+    query = st.text_input("Enter your query:")
+
+    # Check if the query is not empty
+    if query:
+        # Assuming docsearch and chain are defined elsewhere in your code
+        docs = docsearch.similarity_search(query)
+        result = chain.run(input_documents=docs, question=query)
+
+        # Display the result
+        st.write("Result:")
+        st.write(result)
+
