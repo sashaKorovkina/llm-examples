@@ -145,6 +145,7 @@ def nav_page(page_name, timeout_secs=3):
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 
+st.title("Documents")
 # Page access control
 if st.session_state.logged_in:
     st.title("Documents")
@@ -220,7 +221,8 @@ if st.session_state.logged_in:
                             else:
                                 st.write(f"Unsupported file format for {uploaded_file.name}")
                         file_index += 1
-
+else:
+    st.write('Please register or log in to continue.')
 # file_extension = uploaded_file.name.split(".")[-1].lower()
 #
 # if file_extension in ["jpg", "jpeg", "png"]:
