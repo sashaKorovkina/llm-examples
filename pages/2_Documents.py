@@ -148,8 +148,6 @@ if 'logged_in' not in st.session_state:
 st.title("Documents")
 # Page access control
 if st.session_state.logged_in:
-    st.title("Documents")
-
     uploaded_files = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"], accept_multiple_files=True)
 
     if uploaded_files:
