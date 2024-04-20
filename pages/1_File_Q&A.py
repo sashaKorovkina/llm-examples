@@ -13,6 +13,7 @@ from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTex
 import os
 from langchain.chains.question_answering import load_qa_chain
 from langchain.llms import OpenAI
+from streamlit.components.v1 import html
 
 pytesseract.pytesseract.tesseract_cmd = None
 # search for tesseract binary in path
@@ -104,6 +105,39 @@ def send_text_to_openai(text_content, model_engine, unique_key):
         except Exception as e:
             st.error(f"Error: {e}")
 
+def chat_to_ai(file_name):
+    # Functionality to chat about the specific PDF
+    st.write(f"Chatting about {file_name}...")
+
+def get_summary(file_name):
+    # Functionality to summarize the specific PDF
+    st.write(f"Getting summary for {file_name}...")
+
+def nav_page(page_name, timeout_secs=3):
+    nav_script = """
+        <script type="text/javascript">
+            function attempt_nav_page(page_name, start_time, timeout_secs) {
+                var links = window.parent.document.getElementsByTagName("a");
+                for (var i = 0; i < links.length; i++) {
+                    if (links[i].href.toLowerCase().endsWith("/" + page_name.toLowerCase())) {
+                        links[i].click();
+                        return;
+                    }
+                }
+                var elasped = new Date() - start_time;
+                if (elasped < timeout_secs * 1000) {
+                    setTimeout(attempt_nav_page, 100, page_name, start_time, timeout_secs);
+                } else {
+                    alert("Unable to navigate to page '" + page_name + "' after " + timeout_secs + " second(s).");
+                }
+            }
+            window.addEventListener("load", function() {
+                attempt_nav_page("%s", new Date(), %d);
+            });
+        </script>
+    """ % (page_name, timeout_secs)
+    html(nav_script)
+
 st.title("Image Explanation Chatbot!")
 
 uploaded_files = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"], accept_multiple_files=True)
@@ -148,6 +182,12 @@ else:
                                 st.session_state['selected_file'] = uploaded_file.name
                                 st.image(img, caption=f"Selected PDF: {uploaded_file.name}", use_column_width=True)
                                 st.write(f"You have selected: {uploaded_file.name}")
+                                # Display the buttons under the image
+                                if st.button("Chat to AI", key=f"chat_{uploaded_file.name}"):
+                                    nav_page("chat_to_ai")
+                                if st.button("Get Summary", key=f"summary_{uploaded_file.name}"):
+                                    # Handle summary action here
+                                    st.write(f"Getting summary for {uploaded_file.name}...")
                             else:
                                 st.image(img, caption=f"PDF: {uploaded_file.name}", use_column_width=True)
                             doc.close()
