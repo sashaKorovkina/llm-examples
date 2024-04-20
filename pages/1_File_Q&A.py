@@ -126,85 +126,83 @@ cols = st.columns(len(uploaded_files))  # Creates as many columns as there are f
 for i, uploaded_file in enumerate(uploaded_files):
         file_extension = uploaded_file.name.split(".")[-1].lower()
 
-        if file_extension in ["jpg", "jpeg", "png"]:
-            with cols[i]:
-                image = Image.open(uploaded_file)
+        with cols[i]:
+            if file_extension in ["jpg", "jpeg", "png"]:
+                bytes_data = io.BytesIO(uploaded_file.getvalue())
+                image = Image.open(bytes_data)
                 st.image(image, caption=f"Uploaded image: {uploaded_file.name}", use_column_width=True)
-                save_uploaded_file(uploaded_file, 'temp.jpg')
-                base64_image = encode_image('temp.jpg')
-                send_image_to_openai(base64_image)
-        elif file_extension == "pdf":
-            with cols[i]:
-                # Open the PDF file
+            elif file_extension == "pdf":
                 doc = fitz.open(stream=uploaded_file.read(), filetype="pdf")
                 page = doc.load_page(0)  # Load the first page
                 pix = page.get_pixmap()  # Render page to an image
-                img = Image.open(pix.tobytes("png"))  # Convert the image bytes to an Image object
+                img = Image.open(io.BytesIO(pix.tobytes("png")))  # Convert the image bytes to an Image object
                 st.image(img, caption=f"First page of {uploaded_file.name}", use_column_width=True)
                 doc.close()
+            else:
+                st.write(f"Unsupported file format for {uploaded_file.name}")
 
-file_extension = uploaded_file.name.split(".")[-1].lower()
-
-if file_extension in ["jpg", "jpeg", "png"]:
-    image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded image", use_column_width=True)
-    save_uploaded_file(uploaded_file, 'temp.jpg')
-    base64_image = encode_image('temp.jpg')
-    send_image_to_openai(base64_image)
-
-if file_extension == "pdf":
-    pdf_bytes = uploaded_file.getvalue()
-    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-    pdf_images = []
-    pdf_texts = []  # List to store text from all pages
-
-    for page_index in range(len(doc)):
-        page = doc[page_index]
-        pix = page.get_pixmap()
-        image_data = pix.tobytes()
-        pdf_image = Image.open(io.BytesIO(image_data))
-        pdf_images.append(pdf_image)
-
-    for page_index, pdf_image in enumerate(pdf_images):
-        st.image(pdf_image, caption=f"Uploaded PDF to image Page {page_index + 1}", use_column_width=True)
-
-        text = pytesseract.image_to_string(pdf_image)
-        pdf_texts.append(text)  # Accumulate text from each page
-
-        st.write(f"Text from Page {page_index + 1}:")
-        st.write(text)
-
-        texts_to_process = [text]
-        for text_index, text_content in enumerate(texts_to_process):
-            send_text_to_openai(text_content, model_engine, f"button_key_{page_index}_{text_index}")
-
-    # Processing the text from the whole PDF
-    st.write("Accumulated Text from all Pages:")
-    accumulated_text = '\n'.join(pdf_texts)
-
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=512,
-        chunk_overlap=32,
-        length_function=len,
-    )
-    texts = text_splitter.split_text(accumulated_text)
-
-    embeddings = OpenAIEmbeddings(openai_api_key = api_key)
-    docsearch = FAISS.from_texts(texts, embeddings)
-    chain = load_qa_chain(OpenAI(openai_api_key = api_key), chain_type="stuff")
-
-    # Create a text input box for the user to enter their query
-    query = st.text_input("Enter your query:")
-
-    # Check if the query is not empty
-    if query:
-        # Assuming docsearch and chain are defined elsewhere in your code
-        docs = docsearch.similarity_search(query)
-        result = chain.run(input_documents=docs, question=query)
-
-        # Display the result
-        st.write("Result:")
-        st.write(result)
+# file_extension = uploaded_file.name.split(".")[-1].lower()
+#
+# if file_extension in ["jpg", "jpeg", "png"]:
+#     image = Image.open(uploaded_file)
+#     st.image(image, caption="Uploaded image", use_column_width=True)
+#     save_uploaded_file(uploaded_file, 'temp.jpg')
+#     base64_image = encode_image('temp.jpg')
+#     send_image_to_openai(base64_image)
+#
+# if file_extension == "pdf":
+#     pdf_bytes = uploaded_file.getvalue()
+#     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+#     pdf_images = []
+#     pdf_texts = []  # List to store text from all pages
+#
+#     for page_index in range(len(doc)):
+#         page = doc[page_index]
+#         pix = page.get_pixmap()
+#         image_data = pix.tobytes()
+#         pdf_image = Image.open(io.BytesIO(image_data))
+#         pdf_images.append(pdf_image)
+#
+#     for page_index, pdf_image in enumerate(pdf_images):
+#         st.image(pdf_image, caption=f"Uploaded PDF to image Page {page_index + 1}", use_column_width=True)
+#
+#         text = pytesseract.image_to_string(pdf_image)
+#         pdf_texts.append(text)  # Accumulate text from each page
+#
+#         st.write(f"Text from Page {page_index + 1}:")
+#         st.write(text)
+#
+#         texts_to_process = [text]
+#         for text_index, text_content in enumerate(texts_to_process):
+#             send_text_to_openai(text_content, model_engine, f"button_key_{page_index}_{text_index}")
+#
+#     # Processing the text from the whole PDF
+#     st.write("Accumulated Text from all Pages:")
+#     accumulated_text = '\n'.join(pdf_texts)
+#
+#     text_splitter = RecursiveCharacterTextSplitter(
+#         chunk_size=512,
+#         chunk_overlap=32,
+#         length_function=len,
+#     )
+#     texts = text_splitter.split_text(accumulated_text)
+#
+#     embeddings = OpenAIEmbeddings(openai_api_key = api_key)
+#     docsearch = FAISS.from_texts(texts, embeddings)
+#     chain = load_qa_chain(OpenAI(openai_api_key = api_key), chain_type="stuff")
+#
+#     # Create a text input box for the user to enter their query
+#     query = st.text_input("Enter your query:")
+#
+#     # Check if the query is not empty
+#     if query:
+#         # Assuming docsearch and chain are defined elsewhere in your code
+#         docs = docsearch.similarity_search(query)
+#         result = chain.run(input_documents=docs, question=query)
+#
+#         # Display the result
+#         st.write("Result:")
+#         st.write(result)
 
 
 
