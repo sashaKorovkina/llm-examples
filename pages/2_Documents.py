@@ -144,7 +144,7 @@ if 'logged_in' not in st.session_state:
 st.title("Documents")
 
 db = firestore.client()
-bucket = storage.bucket()  # Access the Firebase storage bucket
+bucket = storage.bucket('elmeto-12de0.appspot.com')  # Access the Firebase storage bucket
 
 # Page access control
 if st.session_state.logged_in:
