@@ -145,6 +145,8 @@ if st.session_state.logged_in:
     db = firestore.client()
     st.session_state.db = db
     docs = db.collection('users').get()
+    for doc in docs:
+        st.text(doc.to_dict())  # Print each document's data
 
     # api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
     uploaded_files = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"], accept_multiple_files=True)
