@@ -91,19 +91,3 @@ if not st.session_state['signedout']:
             st.balloons()
 
 
-        #
-        # for doc in docs:
-        #     d = doc.to_dict()
-        #     if d['Username'] == st.session_state.username:
-        #         st.text('Taken Quizzes')
-        #         taken_quizzes = d['taken_quizzes']
-        #         quiz_scores = d['quiz_scores']
-        #
-        #         for i in range(len(taken_quizzes) - 1, -1, -1):
-        #             st.text_area(label=':green[Quiz name: {}]'.format(taken_quizzes[i]),
-        #                          value=taken_quizzes[i] + ': ' + str(quiz_scores[i]) + '/10 points', height=10, key=i)
-        #     else:
-        #         continue
-        #     print(d)
-
-        # st.button('Sign out', on_click=t)
