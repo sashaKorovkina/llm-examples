@@ -175,7 +175,7 @@ if st.session_state.logged_in:
 
     if files:
         st.write(f"Files uploaded by {username}:")
-        st.write(files)
+        st.write(str(files))
         num_files = len(files)
         num_rows = (num_files + 2) // 3
         rows = [st.container() for _ in range(num_rows)]
