@@ -7,7 +7,9 @@ import io
 import pytesseract
 import shutil
 from streamlit.components.v1 import html
-from firebase_admin import firestore
+from firebase_admin import firestore, storage, credentials
+import uuid
+import datetime
 
 # CHANGE FOR CLOUD DEPLOY!!!!!!!
 pytesseract.pytesseract.tesseract_cmd = None
@@ -140,6 +142,10 @@ if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 
 st.title("Documents")
+
+db = firestore.client()
+bucket = storage.bucket()  # Access the Firebase storage bucket
+
 # Page access control
 if st.session_state.logged_in:
     # database test
@@ -153,6 +159,25 @@ if st.session_state.logged_in:
 
     # api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
     uploaded_files = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"], accept_multiple_files=True)
+
+    for uploaded_file in uploaded_files:
+        # Generate a unique ID for the file within Firebase storage
+        blob = bucket.blob(f"{st.session_state.username}/{uuid.uuid4()}_{uploaded_file.name}")
+        blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
+
+        # Get the URL of the uploaded file
+        url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10), method='GET')
+
+        # Store the document metadata in Firestore under the user's 'documents' subcollection
+        doc_ref = db.collection('users').document(st.session_state.username).collection('documents').document()
+        doc_ref.set({
+            'filename': uploaded_file.name,
+            'content_type': uploaded_file.type,
+            'url': url,  # This is a temporary URL for access, you may want to handle this differently
+            'uploaded_at': firestore.SERVER_TIMESTAMP
+        })
+
+        st.success("Uploaded and saved!")
 
     if uploaded_files:
         # selected_model_name = st.selectbox("Select a model:", options=list(models.keys()))
