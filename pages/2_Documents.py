@@ -201,9 +201,9 @@ if st.session_state.logged_in:
                                         checkbox_key = f"select_{file_metadata['filename']}_{file_index}"  # Unique key
                                         if st.checkbox(f"Select PDF: {file_metadata['filename']}", key=checkbox_key):
                                             st.session_state['selected_file'] = file_metadata['filename']
-                                            st.write(f"You have selected: {uploaded_file.name}")
-                                            if st.button("Chat to AI", key=f"chat_{uploaded_file.name}"):
-                                                pdf_bytes = uploaded_file.getvalue()
+                                            st.write(f"You have selected: {file_metadata['filename']}")
+                                            if st.button("Chat to AI", key=f"chat_{file_metadata['filename']}"):
+                                                pdf_bytes = file_metadata.getvalue()
                                                 doc = fitz.open(stream=pdf_bytes, filetype="pdf")
                                                 pdf_images = []
                                                 pdf_texts = []  # List to store text from all pages
@@ -220,8 +220,8 @@ if st.session_state.logged_in:
 
                                                 st.session_state['pdf_images'] = pdf_images
                                                 st.session_state['pdf_texts'] = pdf_texts
-                                                st.session_state['file_name'] = uploaded_file.name
-                                                st.session_state['chat_file_name'] = uploaded_file.name
+                                                st.session_state['file_name'] = file_metadata.name
+                                                st.session_state['chat_file_name'] = file_metadata.name
 
                                                 nav_page("chat_to_ai")
 
