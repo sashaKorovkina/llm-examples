@@ -90,18 +90,7 @@ if not st.session_state['signedout']:
             st.markdown('Please login using your email and password')
             st.balloons()
 
-    # if st.session_state.signout:
-    #     st.text('Name: ' + st.session_state.username)
-    #     st.text('Email: ' + st.session_state.useremail)
-    #
-    #     if 'db' not in st.session_state:
-    #         st.session_state.db = ''
-    #
-    #     db = firestore.client()
-    #
-    #     st.session_state.db = db
 
-        # docs = db.collection('Quizzes').get()
         #
         # for doc in docs:
         #     d = doc.to_dict()

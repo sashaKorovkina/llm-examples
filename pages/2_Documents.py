@@ -1,4 +1,3 @@
-import streamlit as st
 import base64
 import streamlit as st
 import requests
@@ -7,12 +6,6 @@ import fitz
 import io
 import pytesseract
 import shutil
-from langchain.vectorstores import ElasticVectorSearch, Pinecone, Weaviate, FAISS
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTextSplitter
-import os
-from langchain.chains.question_answering import load_qa_chain
-from langchain.llms import OpenAI
 from streamlit.components.v1 import html
 
 # CHANGE FOR CLOUD DEPLOY!!!!!!!
@@ -148,6 +141,10 @@ if 'logged_in' not in st.session_state:
 st.title("Documents")
 # Page access control
 if st.session_state.logged_in:
+    db = firestore.client()
+    st.session_state.db = db
+    docs = db.collection('users').get()
+
     # api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
     uploaded_files = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"], accept_multiple_files=True)
 
