@@ -3,7 +3,7 @@ import firebase_admin
 
 from firebase_admin import credentials
 from firebase_admin import auth
-from firebase_admin import firestore
+
 def initialize_firebase_app():
     try:
         # Attempt to get the app, which will throw an exception if it doesn't exist
