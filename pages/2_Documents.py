@@ -198,6 +198,7 @@ if st.session_state.logged_in:
                                         pix = page.get_pixmap()
                                         img = Image.open(io.BytesIO(pix.tobytes()))
                                         st.image(img, caption=f"{file_metadata['filename']}", use_column_width=True)
+                                        checkbox_key = f"select_{file_metadata['filename']}_{file_index}"  # Unique key
                                         if st.checkbox(f"Select PDF: {file_metadata['filename']}", key=checkbox_key):
                                             st.session_state['selected_file'] = file_metadata['filename']
                                             st.image(img, caption=f"Selected PDF: {file_metadata['filename']}",
