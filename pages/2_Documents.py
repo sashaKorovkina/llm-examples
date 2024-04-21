@@ -193,16 +193,14 @@ if st.session_state.logged_in:
                                 response = requests.get(file_metadata['url'])
                                 if response.status_code == 200:
                                     bytes_data = io.BytesIO(response.content)
-                                    if file_extension in ['jpg', 'jpeg', 'png']:
-                                        image = Image.open(bytes_data)
-                                        st.image(image, caption=f"{file_metadata['filename']}", use_column_width=True)
-                                    elif file_extension == 'pdf':
+                                    if file_extension == 'pdf':
                                         doc = fitz.open("pdf", bytes_data.getvalue())  # Open PDF with PyMuPDF
                                         page = doc.load_page(0)  # Assume you want the first page
                                         pix = page.get_pixmap()
                                         img = Image.open(io.BytesIO(pix.tobytes()))
                                         st.image(img, caption=f"{file_metadata['filename']}", use_column_width=True)
-                                        doc = fitz.open(stream=uploaded_file.read(), filetype="pdf")
+                                        doc.close()
+                                        #doc = fitz.open(stream=uploaded_file.read(), filetype="pdf")
                                         #                                 img = Image.open(io.BytesIO(pix.tobytes("png")))
                                         #                                 # Using a checkbox to select the image
                                         #                                 if st.checkbox(f"Select PDF: {uploaded_file.name}"):
