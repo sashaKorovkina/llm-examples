@@ -7,6 +7,7 @@ import io
 import pytesseract
 import shutil
 from streamlit.components.v1 import html
+from google.cloud import firestore
 
 # CHANGE FOR CLOUD DEPLOY!!!!!!!
 pytesseract.pytesseract.tesseract_cmd = None
