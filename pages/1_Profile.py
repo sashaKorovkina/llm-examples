@@ -28,12 +28,14 @@ def initialize_firebase_app():
         })
 
         # Initialize the Firebase app with the created credential
-        firebase_admin.initialize_app(cred)
-
+        firebase_admin.initialize_app(cred,
+                                      {
+                                          'storageBucket': 'gs://elmeto-12de0.appspot.com'
+                                      }
+                                      )
 
 # Call the function to initialize the app
 initialize_firebase_app()
-
 
 st.title('Welcome to :blue[Elmento]')
 
