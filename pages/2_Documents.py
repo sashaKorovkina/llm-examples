@@ -201,8 +201,30 @@ if st.session_state.logged_in:
                                         checkbox_key = f"select_{file_metadata['filename']}_{file_index}"  # Unique key
                                         if st.checkbox(f"Select PDF: {file_metadata['filename']}", key=checkbox_key):
                                             st.session_state['selected_file'] = file_metadata['filename']
-                                            st.image(img, caption=f"Selected PDF: {file_metadata['filename']}",
-                                                     use_column_width=True)
+                                            st.write(f"You have selected: {uploaded_file.name}")
+                                            if st.button("Chat to AI", key=f"chat_{uploaded_file.name}"):
+                                                pdf_bytes = uploaded_file.getvalue()
+                                                doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+                                                pdf_images = []
+                                                pdf_texts = []  # List to store text from all pages
+
+                                                for page_index in range(len(doc)):
+                                                    page = doc[page_index]
+                                                    pix = page.get_pixmap()
+                                                    image_data = pix.tobytes()
+                                                    pdf_image = Image.open(io.BytesIO(image_data))
+                                                    pdf_images.append(pdf_image)
+
+                                                    text = pytesseract.image_to_string(pdf_image)
+                                                    pdf_texts.append(text)  # Accumulate text from each page
+
+                                                st.session_state['pdf_images'] = pdf_images
+                                                st.session_state['pdf_texts'] = pdf_texts
+                                                st.session_state['file_name'] = uploaded_file.name
+                                                st.session_state['chat_file_name'] = uploaded_file.name
+
+                                                nav_page("chat_to_ai")
+
                                         #doc = fitz.open(stream=uploaded_file.read(), filetype="pdf")
                                         #                                 # Using a checkbox to select the image
                                         #                                 if st.checkbox(f"Select PDF: {uploaded_file.name}"):
