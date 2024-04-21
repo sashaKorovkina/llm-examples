@@ -158,31 +158,29 @@ if st.session_state.logged_in:
 
     uploaded_files = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"], accept_multiple_files=True)
 
-    for uploaded_file in uploaded_files:
-        # Generate a unique ID for the file within Firebase storage
-        blob = bucket.blob(f"{st.session_state.username}/{uuid.uuid4()}_{uploaded_file.name}")
-        blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
-
-        # Get the URL of the uploaded file
-        url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10), method='GET')
-
-        # Store the document metadata in Firestore under the user's 'documents' subcollection
-        doc_ref = db.collection('users').document(st.session_state.username).collection('documents').document()
-        doc_ref.set({
-            'filename': uploaded_file.name,
-            'content_type': uploaded_file.type,
-            'url': url,  # This is a temporary URL for access, you may want to handle this differently
-            'uploaded_at': firestore.SERVER_TIMESTAMP
-        })
-
     if uploaded_files:
-        # selected_model_name = st.selectbox("Select a model:", options=list(models.keys()))
-        # model_engine = models[selected_model_name]
+        for uploaded_file in uploaded_files:
+            # Generate a unique ID for the file within Firebase storage
+            blob = bucket.blob(f"{st.session_state.username}/{uuid.uuid4()}_{uploaded_file.name}")
+            blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
+
+            # Get the URL of the uploaded file
+            url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10), method='GET')
+
+            # Store the document metadata in Firestore under the user's 'documents' subcollection
+            doc_ref = db.collection('users').document(st.session_state.username).collection('documents').document()
+            doc_metadata = {
+                'filename': uploaded_file.name,
+                'content_type': uploaded_file.type,
+                'url': url,
+                'uploaded_at': firestore.SERVER_TIMESTAMP
+            }
+            doc_ref.set(doc_metadata)
+            files.append(doc_metadata)
 
         # CONTAINERIZED OUTPUT DISPLAY
-        num_files = len(uploaded_files)
+        num_files = len(files)
         num_rows = (num_files + 2) // 3
-
         rows = [st.container() for _ in range(num_rows)]
 
         file_index = 0
@@ -191,61 +189,66 @@ if st.session_state.logged_in:
                 cols = st.columns(3)
                 for col in cols:
                     if file_index < num_files:
-                        uploaded_file = uploaded_files[file_index]
-                        file_extension = uploaded_file.name.split(".")[-1].lower()
+                        file_metadata  = files[file_index]
+                        file_extension = file_metadata['filename'].split('.')[-1].lower()
                         with col:
                             if file_extension in ["jpg", "jpeg", "png"]:
-                                bytes_data = io.BytesIO(uploaded_file.getvalue())
+                                response = requests.get(file_metadata['url'])
+                                bytes_data = io.BytesIO(response.content)
                                 image = Image.open(bytes_data)
-                                if st.checkbox(f"Select PDF: {uploaded_file.name}"):
-                                    st.session_state['selected_file'] = uploaded_file.name
-                                    st.image(image, caption=f"Selected Image: {uploaded_file.name}", use_column_width=True)
-                                    st.write(f"You have selected: {uploaded_file.name}")
-                                else:
-                                    st.image(image, caption=f"Image: {uploaded_file.name}", use_column_width=True)
-                            elif file_extension == "pdf":
-                                doc = fitz.open(stream=uploaded_file.read(), filetype="pdf")
-                                page = doc.load_page(0)
-                                pix = page.get_pixmap()
-                                img = Image.open(io.BytesIO(pix.tobytes("png")))
-                                # Using a checkbox to select the image
-                                if st.checkbox(f"Select PDF: {uploaded_file.name}"):
-                                    st.session_state['selected_file'] = uploaded_file.name
-                                    st.image(img, caption=f"Selected PDF: {uploaded_file.name}", use_column_width=True)
-                                    st.write(f"You have selected: {uploaded_file.name}")
-                                    if st.button("Chat to AI", key=f"chat_{uploaded_file.name}"):
-                                        pdf_bytes = uploaded_file.getvalue()
-                                        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-                                        pdf_images = []
-                                        pdf_texts = []  # List to store text from all pages
-
-                                        for page_index in range(len(doc)):
-                                            page = doc[page_index]
-                                            pix = page.get_pixmap()
-                                            image_data = pix.tobytes()
-                                            pdf_image = Image.open(io.BytesIO(image_data))
-                                            pdf_images.append(pdf_image)
-
-                                            text = pytesseract.image_to_string(pdf_image)
-                                            pdf_texts.append(text)  # Accumulate text from each page
-
-                                        st.session_state['pdf_images'] = pdf_images
-                                        st.session_state['pdf_texts'] = pdf_texts
-                                        st.session_state['file_name'] = uploaded_file.name
-                                        st.session_state['chat_file_name'] = uploaded_file.name
-
-                                        nav_page("chat_to_ai")
-                                    if st.button("Get Summary", key=f"summary_{uploaded_file.name}"):
-                                        # Handle summary action here
-                                        st.write(f"Getting summary for {uploaded_file.name}...")
-                                else:
-                                    st.image(img, caption=f"PDF: {uploaded_file.name}", use_column_width=True)
-                                doc.close()
-                            else:
-                                st.write(f"Unsupported file format for {uploaded_file.name}")
-                        file_index += 1
-else:
-    st.write('Please register or log in to continue.')
+                                st.image(image, caption=f"{file_metadata['filename']}", use_column_width=True)
+                            file_index += 1
+#                                 bytes_data = io.BytesIO(uploaded_file.getvalue())
+#                                 image = Image.open(bytes_data)
+#                                 if st.checkbox(f"Select PDF: {uploaded_file.name}"):
+#                                     st.session_state['selected_file'] = uploaded_file.name
+#                                     st.image(image, caption=f"Selected Image: {uploaded_file.name}", use_column_width=True)
+#                                     st.write(f"You have selected: {uploaded_file.name}")
+#                                 else:
+#                                     st.image(image, caption=f"Image: {uploaded_file.name}", use_column_width=True)
+#                             elif file_extension == "pdf":
+#                                 doc = fitz.open(stream=uploaded_file.read(), filetype="pdf")
+#                                 page = doc.load_page(0)
+#                                 pix = page.get_pixmap()
+#                                 img = Image.open(io.BytesIO(pix.tobytes("png")))
+#                                 # Using a checkbox to select the image
+#                                 if st.checkbox(f"Select PDF: {uploaded_file.name}"):
+#                                     st.session_state['selected_file'] = uploaded_file.name
+#                                     st.image(img, caption=f"Selected PDF: {uploaded_file.name}", use_column_width=True)
+#                                     st.write(f"You have selected: {uploaded_file.name}")
+#                                     if st.button("Chat to AI", key=f"chat_{uploaded_file.name}"):
+#                                         pdf_bytes = uploaded_file.getvalue()
+#                                         doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+#                                         pdf_images = []
+#                                         pdf_texts = []  # List to store text from all pages
+#
+#                                         for page_index in range(len(doc)):
+#                                             page = doc[page_index]
+#                                             pix = page.get_pixmap()
+#                                             image_data = pix.tobytes()
+#                                             pdf_image = Image.open(io.BytesIO(image_data))
+#                                             pdf_images.append(pdf_image)
+#
+#                                             text = pytesseract.image_to_string(pdf_image)
+#                                             pdf_texts.append(text)  # Accumulate text from each page
+#
+#                                         st.session_state['pdf_images'] = pdf_images
+#                                         st.session_state['pdf_texts'] = pdf_texts
+#                                         st.session_state['file_name'] = uploaded_file.name
+#                                         st.session_state['chat_file_name'] = uploaded_file.name
+#
+#                                         nav_page("chat_to_ai")
+#                                     if st.button("Get Summary", key=f"summary_{uploaded_file.name}"):
+#                                         # Handle summary action here
+#                                         st.write(f"Getting summary for {uploaded_file.name}...")
+#                                 else:
+#                                     st.image(img, caption=f"PDF: {uploaded_file.name}", use_column_width=True)
+#                                 doc.close()
+#                             else:
+#                                 st.write(f"Unsupported file format for {uploaded_file.name}")
+#                         file_index += 1
+# else:
+#     st.write('Please register or log in to continue.')
 # file_extension = uploaded_file.name.split(".")[-1].lower()
 #
 # if file_extension in ["jpg", "jpeg", "png"]:
