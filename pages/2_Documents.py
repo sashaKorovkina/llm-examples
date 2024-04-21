@@ -203,7 +203,7 @@ if st.session_state.logged_in:
                                             st.session_state['selected_file'] = file_metadata['filename']
                                             st.write(f"You have selected: {file_metadata['filename']}")
                                             if st.button("Chat to AI", key=f"chat_{file_metadata['filename']}"):
-                                                pdf_bytes = file_metadata.getvalue()
+                                                pdf_bytes = io.BytesIO(response.content)
                                                 doc = fitz.open(stream=pdf_bytes, filetype="pdf")
                                                 pdf_images = []
                                                 pdf_texts = []  # List to store text from all pages
