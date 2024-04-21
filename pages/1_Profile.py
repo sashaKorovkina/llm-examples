@@ -90,13 +90,12 @@ if not st.session_state['signedout']:
 
         if st.button('Create my account'):
             # Create the user with Firebase Authentication
-            user = auth.create_user(email=email, password=password, uid=username)
+            user = auth.create_user(email=email, password=password)
 
             # Add user information to Firestore
             doc_ref = db.collection('users').document('123')
             doc_ref.set({
-                'uid': username,
-                'email': email,
+                'uid': email,
                 # Add other user-specific data here if necessary
             })
 
