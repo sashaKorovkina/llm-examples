@@ -3,6 +3,7 @@ import firebase_admin
 
 from firebase_admin import credentials
 from firebase_admin import auth
+from firebase_admin import firestore
 
 def initialize_firebase_app():
     try:
@@ -70,6 +71,10 @@ if 'signout' not in st.session_state:
     st.session_state.signout = False
 
 if not st.session_state['signedout']:
+    db = firestore.client()
+    st.session_state.db = db
+    docs = db.collection('users').get()
+
     choice = st.selectbox('Login/Signup', ['Login', 'Sign Up'])
 
     if choice == 'Login':
@@ -84,7 +89,16 @@ if not st.session_state['signedout']:
         username = st.text_input('Enter your unique username')
 
         if st.button('Create my account'):
+            # Create the user with Firebase Authentication
             user = auth.create_user(email=email, password=password, uid=username)
+
+            # Add user information to Firestore
+            doc_ref = st.session_state.db.collection('users').document(username)
+            doc_ref.set({
+                'uid': username,
+                'email': email,
+                # Add other user-specific data here if necessary
+            })
 
             st.success('Account created successfully!')
             st.markdown('Please login using your email and password')
