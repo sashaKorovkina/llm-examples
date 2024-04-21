@@ -142,6 +142,11 @@ if st.session_state.logged_in:
     username = st.session_state.username
 
     # step 1: see if user has prior documents
+    # step 2: ask user to upload a file
+
+    uploaded_files = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
+                                      accept_multiple_files=True)
+
     docs_ref = db.collection('users').document(username).collection('documents')
     docs = docs_ref.get()
 
