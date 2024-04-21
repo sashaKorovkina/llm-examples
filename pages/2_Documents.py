@@ -148,16 +148,14 @@ bucket = storage.bucket('elmeto-12de0.appspot.com')  # Access the Firebase stora
 
 # Page access control
 if st.session_state.logged_in:
-    # database test
-    # db = firestore.client()
-    # st.session_state.db = db
-    # docs = db.collection('users').get()
-    # for doc in docs:
-    #     d = doc.to_dict()
-    #     if d['Username'] == st.session_state.username:
-    #         st.text(doc.to_dict())  # Print each document's data
+    # Retrieve documents from Firestore
+    docs_ref = db.collection('users').document(st.session_state.username).collection('documents')
+    docs = docs_ref.get()
 
-    # api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
+    files = []
+    for doc in docs:
+        files.append(doc.to_dict())  # Each file metadata is appended to the files list
+
     uploaded_files = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"], accept_multiple_files=True)
 
     for uploaded_file in uploaded_files:
@@ -176,8 +174,6 @@ if st.session_state.logged_in:
             'url': url,  # This is a temporary URL for access, you may want to handle this differently
             'uploaded_at': firestore.SERVER_TIMESTAMP
         })
-
-        # st.success("Uploaded and saved!")
 
     if uploaded_files:
         # selected_model_name = st.selectbox("Select a model:", options=list(models.keys()))
