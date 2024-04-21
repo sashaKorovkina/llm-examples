@@ -200,19 +200,20 @@ if st.session_state.logged_in:
                                         page = doc.load_page(0)  # Assume you want the first page
                                         pix = page.get_pixmap()
                                         img = Image.open(io.BytesIO(pix.tobytes()))
-                                        #st.image(img, caption=f"{file_metadata['filename']}", use_column_width=True)
+                                        st.image(img, caption=f"{file_metadata['filename']}", use_column_width=True)
 
-                                        #doc = fitz.open(stream=uploaded_file.read(), filetype="pdf")
-                                        # Using a checkbox to select the image
-                                        if st.checkbox(f"Select PDF: {uploaded_file.name}"):
-                                            st.session_state['selected_file'] = uploaded_file.name
-                                            st.image(img, caption=f"Selected PDF: {uploaded_file.name}", use_column_width=True)
-                                            st.write(f"You have selected: {uploaded_file.name}")
-                                            if st.button("Chat to AI", key=f"chat_{uploaded_file.name}"):
-                                                pdf_bytes = uploaded_file.getvalue()
-                                                doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-                                                pdf_images = []
-                                                pdf_texts = []  # List to store text from all pages
+                                        doc = fitz.open(stream=uploaded_file.read(), filetype="pdf")
+                                        #                                 img = Image.open(io.BytesIO(pix.tobytes("png")))
+                                        #                                 # Using a checkbox to select the image
+                                        #                                 if st.checkbox(f"Select PDF: {uploaded_file.name}"):
+                                        #                                     st.session_state['selected_file'] = uploaded_file.name
+                                        #                                     st.image(img, caption=f"Selected PDF: {uploaded_file.name}", use_column_width=True)
+                                        #                                     st.write(f"You have selected: {uploaded_file.name}")
+                                        #                                     if st.button("Chat to AI", key=f"chat_{uploaded_file.name}"):
+                                        #                                         pdf_bytes = uploaded_file.getvalue()
+                                        #                                         doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+                                        #                                         pdf_images = []
+                                        #                                         pdf_texts = []  # List to store text from all pages
                                         #
                                         #                                         for page_index in range(len(doc)):
                                         #                                             page = doc[page_index]
