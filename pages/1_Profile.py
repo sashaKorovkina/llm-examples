@@ -93,7 +93,7 @@ if not st.session_state['signedout']:
             user = auth.create_user(email=email, password=password, uid=username)
 
             # Add user information to Firestore
-            doc_ref = st.session_state.db.collection('users').document(username)
+            doc_ref = db.collection('users').document('123')
             doc_ref.set({
                 'uid': username,
                 'email': email,
