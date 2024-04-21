@@ -2,14 +2,11 @@ import base64
 import streamlit as st
 import requests
 from PIL import Image
-import fitz
 import io
 import pytesseract
 import shutil
 from streamlit.components.v1 import html
-from firebase_admin import firestore, storage, credentials
-import uuid
-import datetime
+from firebase_admin import firestore, storage
 
 # CHANGE FOR CLOUD DEPLOY!!!!!!!
 pytesseract.pytesseract.tesseract_cmd = None
@@ -20,22 +17,23 @@ pytesseract.pytesseract.tesseract_cmd = None
 def find_tesseract_binary() -> str:
     return shutil.which("tesseract")
 
-# set tesseract binary path
+# INITIALISE VARIABLES #################################################################################################
+
+# pytesseract
 pytesseract.pytesseract.tesseract_cmd = find_tesseract_binary()
 if not pytesseract.pytesseract.tesseract_cmd:
     st.error("Tesseract binary not found in PATH. Please install Tesseract.")
 
+# firestore database
+db = firestore.client()
+bucket = storage.bucket('elmeto-12de0.appspot.com')
+
+# logged in parameter
+if 'logged_in' not in st.session_state:
+    st.session_state.logged_in = False
+
 # with st.sidebar:
 #     api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
-
-# models = {
-#     "GPT-4": "gpt-4",
-#     "GPT-4 Turbo": "gpt-4-turbo",
-#     "GPT-3.5 Turbo": "gpt-3.5-turbo",
-#     "Code Davinci 002": "code-davinci-002",
-#     "Text Davinci 003": "text-davinci-003",
-#     "Text Davinci 004": "text-davinci-004",
-# }
 
 def encode_image(image_path):
   with open(image_path, "rb") as image_file:
@@ -138,22 +136,16 @@ def nav_page(page_name, timeout_secs=3):
     """ % (page_name, timeout_secs)
     html(nav_script)
 
-if 'logged_in' not in st.session_state:
-    st.session_state.logged_in = False
-
 st.title("Documents")
-
-db = firestore.client()
-bucket = storage.bucket('elmeto-12de0.appspot.com')  # Access the Firebase storage bucket
-
 # Page access control
 if st.session_state.logged_in:
-    username = st.session_state.username  # Assuming username is stored in session_state
-    # Retrieve documents from Firestore
+    username = st.session_state.username
+
+    # step 1: see if user has prior documents
     docs_ref = db.collection('users').document(username).collection('documents')
     docs = docs_ref.get()
 
-    files = [doc.to_dict() for doc in docs]  # List comprehension to gather file metadata
+    files = [doc.to_dict() for doc in docs]
 
     if files:
         st.write(f"Files uploaded by {username}:")
