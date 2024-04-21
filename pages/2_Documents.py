@@ -9,6 +9,7 @@ from streamlit.components.v1 import html
 from firebase_admin import firestore, storage
 import uuid
 import datetime
+import fitz
 
 # CHANGE FOR CLOUD DEPLOY!!!!!!!
 pytesseract.pytesseract.tesseract_cmd = None
@@ -191,13 +192,21 @@ if st.session_state.logged_in:
                                 response = requests.get(file_metadata['url'])
                                 if response.status_code == 200:
                                     bytes_data = io.BytesIO(response.content)
-                                    image = Image.open(bytes_data)
-                                    st.image(image, caption=f"{file_metadata['filename']}", use_column_width=True)
+                                    if file_extension in ['jpg', 'jpeg', 'png']:
+                                        image = Image.open(bytes_data)
+                                        st.image(image, caption=f"{file_metadata['filename']}", use_column_width=True)
+                                    elif file_extension == 'pdf':
+                                        doc = fitz.open("pdf", bytes_data.getvalue())  # Open PDF with PyMuPDF
+                                        page = doc.load_page(0)  # Assume you want the first page
+                                        pix = page.get_pixmap()
+                                        img = Image.open(io.BytesIO(pix.tobytes()))
+                                        st.image(img, caption=f"{file_metadata['filename']}", use_column_width=True)
+                                        doc.close()
                                 else:
                                     st.error(
-                                        f"Failed to load image {file_metadata['filename']} with status code {response.status_code}")
+                                        f"Failed to load file {file_metadata['filename']} with status code {response.status_code}")
                             except Exception as e:
-                                st.error(f"Failed to open image {file_metadata['filename']}. Error: {str(e)}")
+                                st.error(f"Failed to open file {file_metadata['filename']}. Error: {str(e)}")
                         file_index += 1
     else:
         st.write("No files found for this user.")
