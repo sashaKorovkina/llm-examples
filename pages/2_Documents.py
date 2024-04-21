@@ -177,7 +177,7 @@ if st.session_state.logged_in:
             'uploaded_at': firestore.SERVER_TIMESTAMP
         })
 
-        st.success("Uploaded and saved!")
+        # st.success("Uploaded and saved!")
 
     if uploaded_files:
         # selected_model_name = st.selectbox("Select a model:", options=list(models.keys()))
