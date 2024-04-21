@@ -199,7 +199,6 @@ if st.session_state.logged_in:
                                         pix = page.get_pixmap()
                                         img = Image.open(io.BytesIO(pix.tobytes()))
                                         st.image(img, caption=f"{file_metadata['filename']}", use_column_width=True)
-                                        doc.close()
                                         #doc = fitz.open(stream=uploaded_file.read(), filetype="pdf")
                                         #                                 img = Image.open(io.BytesIO(pix.tobytes("png")))
                                         #                                 # Using a checkbox to select the image
