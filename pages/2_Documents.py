@@ -175,6 +175,7 @@ if st.session_state.logged_in:
 
     if files:
         st.write(f"Files uploaded by {username}:")
+        st.write(files)
         num_files = len(files)
         num_rows = (num_files + 2) // 3
         rows = [st.container() for _ in range(num_rows)]
@@ -201,7 +202,6 @@ if st.session_state.logged_in:
                                         pix = page.get_pixmap()
                                         img = Image.open(io.BytesIO(pix.tobytes()))
                                         st.image(img, caption=f"{file_metadata['filename']}", use_column_width=True)
-
                                         doc = fitz.open(stream=uploaded_file.read(), filetype="pdf")
                                         #                                 img = Image.open(io.BytesIO(pix.tobytes("png")))
                                         #                                 # Using a checkbox to select the image
