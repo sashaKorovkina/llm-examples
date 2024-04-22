@@ -175,55 +175,56 @@ if st.session_state.logged_in:
 
     if files:
         st.write(f"Files uploaded by {username}:")
-        num_files = len(files)
-        num_rows = (num_files + 2) // 3
-        rows = [st.container() for _ in range(num_rows)]
-
-        file_index = 0
-        for row in rows:
-            with row:
-                cols = st.columns(3)
-                for col in cols:
-                    if file_index < num_files:
-                        file_metadata = files[file_index]
-                        file_extension = file_metadata['filename'].split('.')[-1].lower()
-                        with col:
-                            try:
-                                response = requests.get(file_metadata['url'])
-                                if response.status_code == 200:
-                                    bytes_data = io.BytesIO(response.content)
-                                    if file_extension == 'pdf':
-                                        doc = fitz.open("pdf", bytes_data.getvalue())  # Open PDF with PyMuPDF
-                                        page = doc.load_page(0)  # Assume you want the first page
-                                        pix = page.get_pixmap()
-                                        img = Image.open(io.BytesIO(pix.tobytes()))
-                                        st.image(img, caption=f"{file_metadata['filename']}", use_column_width=True)
-                                        checkbox_key = f"select_{file_metadata['filename']}_{file_index}"  # Unique key
-                                        if st.checkbox(f"Select PDF: {file_metadata['filename']}", key=checkbox_key):
-                                            st.session_state['selected_file'] = file_metadata['filename']
-                                            st.write(f"You have selected: {file_metadata['filename']}")
-                                            if st.button("Chat to AI", key=f"chat_{file_metadata['filename']}"):
-                                                pdf_bytes = io.BytesIO(response.content)
-                                                doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-                                                pdf_images = []
-                                                pdf_texts = []  # List to store text from all pages
-
-                                                for page_index in range(len(doc)):
-                                                    page = doc[page_index]
-                                                    pix = page.get_pixmap()
-                                                    image_data = pix.tobytes()
-                                                    pdf_image = Image.open(io.BytesIO(image_data))
-                                                    pdf_images.append(pdf_image)
-
-                                                    text = pytesseract.image_to_string(pdf_image)
-                                                    pdf_texts.append(text)  # Accumulate text from each page
-
-                                                st.session_state['pdf_images'] = pdf_images
-                                                st.session_state['pdf_texts'] = pdf_texts
-                                                st.session_state['file_name'] = file_metadata.name
-                                                st.session_state['chat_file_name'] = file_metadata.name
-
-                                                nav_page("chat_to_ai")
+        st.write(files)
+        # num_files = len(files)
+        # num_rows = (num_files + 2) // 3
+        # rows = [st.container() for _ in range(num_rows)]
+        #
+        # file_index = 0
+        # for row in rows:
+        #     with row:
+        #         cols = st.columns(3)
+        #         for col in cols:
+        #             if file_index < num_files:
+        #                 file_metadata = files[file_index]
+        #                 file_extension = file_metadata['filename'].split('.')[-1].lower()
+        #                 with col:
+        #                     try:
+        #                         response = requests.get(file_metadata['url'])
+        #                         if response.status_code == 200:
+        #                             bytes_data = io.BytesIO(response.content)
+        #                             if file_extension == 'pdf':
+        #                                 doc = fitz.open("pdf", bytes_data.getvalue())  # Open PDF with PyMuPDF
+        #                                 page = doc.load_page(0)  # Assume you want the first page
+        #                                 pix = page.get_pixmap()
+        #                                 img = Image.open(io.BytesIO(pix.tobytes()))
+        #                                 st.image(img, caption=f"{file_metadata['filename']}", use_column_width=True)
+        #                                 checkbox_key = f"select_{file_metadata['filename']}_{file_index}"  # Unique key
+        #                                 if st.checkbox(f"Select PDF: {file_metadata['filename']}", key=checkbox_key):
+        #                                     st.session_state['selected_file'] = file_metadata['filename']
+        #                                     st.write(f"You have selected: {file_metadata['filename']}")
+        #                                     if st.button("Chat to AI", key=f"chat_{file_metadata['filename']}"):
+        #                                         pdf_bytes = io.BytesIO(response.content)
+        #                                         doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        #                                         pdf_images = []
+        #                                         pdf_texts = []  # List to store text from all pages
+        #
+        #                                         for page_index in range(len(doc)):
+        #                                             page = doc[page_index]
+        #                                             pix = page.get_pixmap()
+        #                                             image_data = pix.tobytes()
+        #                                             pdf_image = Image.open(io.BytesIO(image_data))
+        #                                             pdf_images.append(pdf_image)
+        #
+        #                                             text = pytesseract.image_to_string(pdf_image)
+        #                                             pdf_texts.append(text)  # Accumulate text from each page
+        #
+        #                                         st.session_state['pdf_images'] = pdf_images
+        #                                         st.session_state['pdf_texts'] = pdf_texts
+        #                                         st.session_state['file_name'] = file_metadata.name
+        #                                         st.session_state['chat_file_name'] = file_metadata.name
+        #
+        #                                         nav_page("chat_to_ai")
 
                                         #doc = fitz.open(stream=uploaded_file.read(), filetype="pdf")
                                         #                                 # Using a checkbox to select the image
@@ -252,17 +253,17 @@ if st.session_state.logged_in:
                                         #                                         st.session_state['chat_file_name'] = uploaded_file.name
                                         #
                                         #                                         nav_page("chat_to_ai")
-                                        doc.close()
-                                else:
-                                    st.error(
-                                        f"Failed to load file {file_metadata['filename']} with status code {response.status_code}")
-                            except Exception as e:
-                                st.error(f"Failed to open file {file_metadata['filename']}. Error: {str(e)}")
-                        file_index += 1
-    else:
-        st.write("No files found for this user.")
-else:
-    st.write('Please register or log in to continue.')
+#                                         doc.close()
+#                                 else:
+#                                     st.error(
+#                                         f"Failed to load file {file_metadata['filename']} with status code {response.status_code}")
+#                             except Exception as e:
+#                                 st.error(f"Failed to open file {file_metadata['filename']}. Error: {str(e)}")
+#                         file_index += 1
+#     else:
+#         st.write("No files found for this user.")
+# else:
+#     st.write('Please register or log in to continue.')
 
 
 #
