@@ -147,35 +147,39 @@ if st.session_state.logged_in:
     # step 1: see if user has prior documents
     # step 2: ask user to upload a file
 
+    # Step 1: Fetch existing documents
+    docs_ref = db.collection('users').document(username).collection('documents')
+    docs = docs_ref.get()
+    existing_files = {doc.to_dict()['filename']: doc.to_dict() for doc in docs}
+
+    # Step 2: File upload
     uploaded_files = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
                                       accept_multiple_files=True)
 
-    # if uploaded_files:
-    #     for uploaded_file in uploaded_files:
-    #         # Generate a unique ID for the file within Firebase storage
-    #         blob = bucket.blob(f"{st.session_state.username}/{uuid.uuid4()}_{uploaded_file.name}")
-    #         blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
-    #
-    #         # Get the URL of the uploaded file
-    #         url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10), method='GET')
-    #
-    #         # Store the document metadata in Firestore under the user's 'documents' subcollection
-    #         doc_ref = db.collection('users').document(st.session_state.username).collection('documents').document()
-    #         doc_ref.set({
-    #             'filename': uploaded_file.name,
-    #             'content_type': uploaded_file.type,
-    #             'url': url,  # This is a temporary URL for access, you may want to handle this differently
-    #             'uploaded_at': firestore.SERVER_TIMESTAMP
-    #         })
+    # Step 3: Process uploads and store new ones
+    if uploaded_files:
+        for uploaded_file in uploaded_files:
+            if uploaded_file.name not in existing_files:
+                # New file, process it
+                blob = bucket.blob(f"{username}/{uuid.uuid4()}_{uploaded_file.name}")
+                blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
+                url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10), method='GET')
 
-    docs_ref = db.collection('users').document(username).collection('documents')
-    docs = docs_ref.get()
+                # Store new file metadata in Firestore
+                doc_ref = docs_ref.document()
+                doc_data = {
+                    'filename': uploaded_file.name,
+                    'content_type': uploaded_file.type,
+                    'url': url,
+                    'uploaded_at': firestore.SERVER_TIMESTAMP
+                }
+                doc_ref.set(doc_data)
+                existing_files[uploaded_file.name] = doc_data  # Add to local dictionary to display later
 
-    files = [doc.to_dict() for doc in docs]
-
-    if files:
-        st.write(f"Files uploaded by {username}:")
-        st.write(files)
+    # Step 4: Display all files
+    if existing_files:
+        for filename, file_info in existing_files.items():
+            st.write(f"{filename}: {file_info['url']}")
         # num_files = len(files)
         # num_rows = (num_files + 2) // 3
         # rows = [st.container() for _ in range(num_rows)]
