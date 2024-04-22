@@ -7,13 +7,10 @@ from firebase_admin import firestore
 
 def initialize_firebase_app():
     try:
-        # Attempt to get the app, which will throw an exception if it doesn't exist
         firebase_admin.get_app()
     except ValueError:
-        # Access the secrets from Streamlit's secrets.toml file
         secrets = st.secrets["firebase-auth"]
-
-        # Create a Firebase credential object from the JSON provided in secrets
+        
         cred = credentials.Certificate({
             "type": secrets["type"],
             "project_id": secrets["project_id"],
@@ -92,8 +89,6 @@ if not st.session_state['signedout']:
 
         if st.button('Create my account'):
             user = auth.create_user(email=email, password=password)
-
-            # saving user data to the database
             doc_ref = db.collection('users').document(user.uid)
             doc_ref.set({
                 'uid': user.uid,
