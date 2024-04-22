@@ -11,7 +11,7 @@ import uuid
 import datetime
 import fitz
 
-# CHANGE FOR CLOUD DEPLOY!!!!!!!
+# CHANGE FOR CLOUD DEPLOY!!!!
 pytesseract.pytesseract.tesseract_cmd = None
 # pytesseract.pytesseract.tesseract_cmd = r'C:\Users\sasha\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
