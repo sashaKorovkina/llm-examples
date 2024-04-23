@@ -10,6 +10,8 @@ from firebase_admin import firestore, storage
 import uuid
 import datetime
 import fitz
+import tempfile
+from pdf2image import convert_from_path, convert_from_bytes
 
 # CHANGE FOR CLOUD DEPLOY!!!!
 pytesseract.pytesseract.tesseract_cmd = None
@@ -160,7 +162,16 @@ if st.session_state.logged_in:
     if uploaded_files:
         for uploaded_file in uploaded_files:
             if uploaded_file.name not in existing_files:
-                # New file, process it
+                # Process new file
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as f:
+                    f.write(uploaded_file.getvalue())
+                    f.seek(0)
+                    images = convert_from_path(f.name, first_page=1, last_page=1)
+
+                # Assuming the PDF is not empty, get the first page as image
+                if images:
+                    image = images[0]
+                    st.image(image, caption=uploaded_file.name)
                 blob = bucket.blob(f"{username}/{uuid.uuid4()}_{uploaded_file.name}")
                 blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
                 url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10), method='GET')
