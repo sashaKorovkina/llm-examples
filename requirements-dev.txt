@@ -3,4 +3,3 @@ mypy==1.4.1
 pre-commit==3.3.3
 watchdog
 pytest
-pdf2image==1.17.0

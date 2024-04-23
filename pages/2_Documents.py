@@ -11,7 +11,6 @@ import uuid
 import datetime
 import fitz
 import tempfile
-from pdf2image import convert_from_path, convert_from_bytes
 
 # CHANGE FOR CLOUD DEPLOY!!!!
 pytesseract.pytesseract.tesseract_cmd = None
