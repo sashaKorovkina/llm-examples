@@ -199,7 +199,9 @@ if existing_files:
             for col in cols:
                 if file_index < num_files:
                     filename, file_info = list(existing_files.items())[file_index]
-                    st.write(f"{filename}: {file_info['url']}")
+                    uploaded_file = existing_files[file_index]
+                    file_extension = uploaded_file.name.split(".")[-1].lower()
+                    st.write(file_extension)
                     file_index += 1
 
                         # file_metadata = existing_files[file_index]
