@@ -178,19 +178,20 @@ if st.session_state.logged_in:
 
     # Step 4: Display all files
     if existing_files:
-        for filename, file_info in existing_files.items():
-            num_files = len(existing_files)
-            num_rows = (num_files + 2) // 3
-            rows = [st.container() for _ in range(num_rows)]
+        num_files = len(existing_files)
+        num_rows = (num_files + 2) // 3
+        rows = [st.container() for _ in range(num_rows)]
+        file_index = 0
+        for row in rows:
+            with row:
+                cols = st.columns(3)
+                for col in cols:
+                    if file_index < num_files:
+                        filename, file_info = list(existing_files.items())[file_index]
+                        st.write(f"{filename}: {file_info['url']}")
+                        file_index += 1
 
-            file_index = 0
-            for row in rows:
-                with row:
-                    cols = st.columns(3)
-                    for col in cols:
-                        if file_index < num_files:
-                            st.write(f"{filename}: {file_info['url']}")
-                            # file_metadata = existing_files[file_index]
+                        # file_metadata = existing_files[file_index]
                             # file_extension = file_metadata['filename'].split('.')[-1].lower()
                             # with col:
                             #     try:
