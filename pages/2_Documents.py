@@ -10,7 +10,6 @@ from firebase_admin import firestore, storage
 import uuid
 import datetime
 import fitz
-import tempfile
 
 # CHANGE FOR CLOUD DEPLOY!!!!
 pytesseract.pytesseract.tesseract_cmd = None
@@ -142,76 +141,64 @@ def nav_page(page_name, timeout_secs=3):
 
 st.title("Documents")
 # Page access control
-# if st.session_state.logged_in:
-username = st.session_state.username
+if st.session_state.logged_in:
+    username = st.session_state.username
 
-# step 1: see if user has prior documents
-# step 2: ask user to upload a file
+    # step 1: see if user has prior documents
+    # step 2: ask user to upload a file
 
-# Step 1: Fetch existing documents
-docs_ref = db.collection('users').document(username).collection('documents')
-docs = docs_ref.get()
-existing_files = {doc.to_dict()['filename']: doc.to_dict() for doc in docs}
+    # Step 1: Fetch existing documents
+    docs_ref = db.collection('users').document(username).collection('documents')
+    docs = docs_ref.get()
+    existing_files = {doc.to_dict()['filename']: doc.to_dict() for doc in docs}
 
-# Step 2: File upload
-uploaded_files = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
-                                  accept_multiple_files=True)
+    # Step 2: File upload
+    uploaded_files = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
+                                      accept_multiple_files=True)
 
-# Step 3: Process uploads and store new ones
-if uploaded_files:
-    for uploaded_file in uploaded_files:
-        if uploaded_file.name not in existing_files:
-            # Process new file
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as f:
-                f.write(uploaded_file.getvalue())
-                f.seek(0)
-                images = convert_from_path(f.name, first_page=1, last_page=1)
+    # Step 3: Process uploads and store new ones
+    if uploaded_files:
+        for uploaded_file in uploaded_files:
+            if uploaded_file.name not in existing_files:
+                # New file, process it
+                blob = bucket.blob(f"{username}/{uuid.uuid4()}_{uploaded_file.name}")
+                blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
+                url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10), method='GET')
 
-            # Assuming the PDF is not empty, get the first page as image
-            if images:
-                image = images[0]
-                st.image(image, caption=uploaded_file.name)
-            blob = bucket.blob(f"{username}/{uuid.uuid4()}_{uploaded_file.name}")
-            blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
-            url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10), method='GET')
+                # Store new file metadata in Firestore
+                doc_ref = docs_ref.document()
+                doc_data = {
+                    'filename': uploaded_file.name,
+                    'content_type': uploaded_file.type,
+                    'url': url,
+                    'uploaded_at': firestore.SERVER_TIMESTAMP
+                }
+                doc_ref.set(doc_data)
+                existing_files[uploaded_file.name] = doc_data  # Add to local dictionary to display later
 
-            # Store new file metadata in Firestore
-            doc_ref = docs_ref.document()
-            doc_data = {
-                'filename': uploaded_file.name,
-                'content_type': uploaded_file.type,
-                'url': url,
-                'uploaded_at': firestore.SERVER_TIMESTAMP
-            }
-            doc_ref.set(doc_data)
-            existing_files[uploaded_file.name] = doc_data  # Add to local dictionary to display later
+    # Step 4: Display all files
+    if existing_files:
+        for filename, file_info in existing_files.items():
+            st.write(f"{filename}: {file_info['url']}")
+            doc = fitz.open(stream=filename.getvalue(), filetype="pdf")
 
-# Step 4: Display all files
-if existing_files:
-    num_files = len(existing_files)
-    num_rows = (num_files + 2) // 3
-    rows = [st.container() for _ in range(num_rows)]
-    file_index = 0
-    for row in rows:
-        with row:
-            cols = st.columns(3)
-            for col in cols:
-                if file_index < num_files:
-                    filename, file_info = list(existing_files.items())[file_index]
-                    uploaded_file = existing_files[file_index]
-                    file_extension = uploaded_file.name.split(".")[-1].lower()
-                    st.write(file_extension)
-                    file_index += 1
-
-                        # file_metadata = existing_files[file_index]
-                            # file_extension = file_metadata['filename'].split('.')[-1].lower()
-                            # with col:
-                            #     try:
-                            #         response = requests.get(file_metadata['url'])
-                            #         if response.status_code == 200:
-                            #             bytes_data = io.BytesIO(response.content)
-                            #     except Exception as e:
-                            #         st.error(f"Failed to open file {file_metadata['filename']}. Error: {str(e)}")
+        # num_files = len(files)
+        # num_rows = (num_files + 2) // 3
+        # rows = [st.container() for _ in range(num_rows)]
+        #
+        # file_index = 0
+        # for row in rows:
+        #     with row:
+        #         cols = st.columns(3)
+        #         for col in cols:
+        #             if file_index < num_files:
+        #                 file_metadata = files[file_index]
+        #                 file_extension = file_metadata['filename'].split('.')[-1].lower()
+        #                 with col:
+        #                     try:
+        #                         response = requests.get(file_metadata['url'])
+        #                         if response.status_code == 200:
+        #                             bytes_data = io.BytesIO(response.content)
         #                             if file_extension == 'pdf':
         #                                 doc = fitz.open("pdf", bytes_data.getvalue())  # Open PDF with PyMuPDF
         #                                 page = doc.load_page(0)  # Assume you want the first page
@@ -287,6 +274,8 @@ if existing_files:
 
 #
 #     if uploaded_files:
+#         # selected_model_name = st.selectbox("Select a model:", options=list(models.keys()))
+#         # model_engine = models[selected_model_name]
 #
 #         # CONTAINERIZED OUTPUT DISPLAY
 #         num_files = len(uploaded_files)
