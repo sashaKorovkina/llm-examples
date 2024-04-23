@@ -184,6 +184,8 @@ if st.session_state.logged_in:
                 response = requests.get(file_info['url'])
                 if response.status_code == 200:
                     st.write('Successfully opened')
+                else:
+                    st.error(f'Failed to open {filename}: HTTP {response.status_code}')
             except Exception as e:
                 st.write(e)
             # file_content = fetch_file_content(file_info['url'])  # You would need to implement this function
