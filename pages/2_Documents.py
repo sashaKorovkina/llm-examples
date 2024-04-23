@@ -197,6 +197,8 @@ if st.session_state.logged_in:
                                     response = requests.get(file_metadata['url'])
                                     if response.status_code == 200:
                                         bytes_data = io.BytesIO(response.content)
+                                except Exception as e:
+                                    st.error(f"Failed to open file {file_metadata['filename']}. Error: {str(e)}")
         #                             if file_extension == 'pdf':
         #                                 doc = fitz.open("pdf", bytes_data.getvalue())  # Open PDF with PyMuPDF
         #                                 page = doc.load_page(0)  # Assume you want the first page
@@ -272,8 +274,6 @@ if st.session_state.logged_in:
 
 #
 #     if uploaded_files:
-#         # selected_model_name = st.selectbox("Select a model:", options=list(models.keys()))
-#         # model_engine = models[selected_model_name]
 #
 #         # CONTAINERIZED OUTPUT DISPLAY
 #         num_files = len(uploaded_files)
