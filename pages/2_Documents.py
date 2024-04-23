@@ -179,7 +179,6 @@ if st.session_state.logged_in:
     # Step 4: Display all files
     if existing_files:
         for filename, file_info in existing_files.items():
-            st.write(f"{filename}: {file_info['url']}")
             num_files = len(existing_files)
             num_rows = (num_files + 2) // 3
             rows = [st.container() for _ in range(num_rows)]
@@ -190,15 +189,16 @@ if st.session_state.logged_in:
                     cols = st.columns(3)
                     for col in cols:
                         if file_index < num_files:
-                            file_metadata = existing_files[file_index]
-                            file_extension = file_metadata['filename'].split('.')[-1].lower()
-                            with col:
-                                try:
-                                    response = requests.get(file_metadata['url'])
-                                    if response.status_code == 200:
-                                        bytes_data = io.BytesIO(response.content)
-                                except Exception as e:
-                                    st.error(f"Failed to open file {file_metadata['filename']}. Error: {str(e)}")
+                            st.write(f"{filename}: {file_info['url']}")
+                            # file_metadata = existing_files[file_index]
+                            # file_extension = file_metadata['filename'].split('.')[-1].lower()
+                            # with col:
+                            #     try:
+                            #         response = requests.get(file_metadata['url'])
+                            #         if response.status_code == 200:
+                            #             bytes_data = io.BytesIO(response.content)
+                            #     except Exception as e:
+                            #         st.error(f"Failed to open file {file_metadata['filename']}. Error: {str(e)}")
         #                             if file_extension == 'pdf':
         #                                 doc = fitz.open("pdf", bytes_data.getvalue())  # Open PDF with PyMuPDF
         #                                 page = doc.load_page(0)  # Assume you want the first page
