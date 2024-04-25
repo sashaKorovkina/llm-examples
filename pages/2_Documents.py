@@ -179,15 +179,23 @@ if st.session_state.logged_in:
     # Step 4: Display all files
     if existing_files:
         for filename, file_info in existing_files.items():
-            st.write(f"{filename}: {file_info['url']}")
-            try:
-                response = requests.get(file_info['url'])
-                if response.status_code == 200:
-                    st.write('Successfully opened')
-                else:
-                    st.error(f'Failed to open {filename}: HTTP {response.status_code}')
-            except Exception as e:
-                st.write(e)
+            for filename, file_info in existing_files.items():
+                st.write(f"Filename: {filename}")
+                st.write(f"Content Type: {file_info['content_type']}")
+                st.write(f"URL: {file_info['url']}")
+                st.write(f"Uploaded At: {file_info['uploaded_at']}")
+                st.write(f"File Extension: {file_info.get('file_extension', 'N/A')}")  # Print extension if available
+
+                # Check if the file is accessible
+                try:
+                    response = requests.get(file_info['url'])
+                    if response.status_code == 200:
+                        st.write('Successfully opened')
+                    else:
+                        st.error(f'Failed to open {filename}: HTTP {response.status_code}')
+                except Exception as e:
+                    st.error(f'Error accessing {filename}: {str(e)}')
+
             # file_content = fetch_file_content(file_info['url'])  # You would need to implement this function
 
             # Open the PDF from the binary data
