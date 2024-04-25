@@ -170,12 +170,6 @@ st.title("Documents")
 if st.session_state.logged_in:
     username = st.session_state.username
 
-    files = get_existing_files()
-    if files:
-        st.write("The existing files are:")
-        for file in files:
-            check_file(file)
-
     uploaded_file = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
                                       accept_multiple_files=False)
 
@@ -194,7 +188,12 @@ if st.session_state.logged_in:
             'url': url,  # This is a temporary URL for access, you may want to handle this differently
             'uploaded_at': firestore.SERVER_TIMESTAMP
         })
-        st.write(f'Current document is:')
-        file = get_last_file()
-        check_file(file)
+        # st.write(f'Current document is:')
+        # file = get_last_file()
+        # check_file(file)
 
+        files = get_existing_files()
+        if files:
+            st.write("The existing files are:")
+            for file in files:
+                check_file(file)
