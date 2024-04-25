@@ -163,8 +163,8 @@ if st.session_state.logged_in:
             'uploaded_at': firestore.SERVER_TIMESTAMP
         })
 
-docs_ref = db.collection('users').document(username).collection('documents')
-docs = docs_ref.get()
+    docs_ref = db.collection('users').document(username).collection('documents')
+    docs = docs_ref.get()
 
 
     docs_ref = db.collection('users').document(username).collection('documents')
