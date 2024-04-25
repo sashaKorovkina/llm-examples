@@ -178,20 +178,43 @@ def create_thumbnail(image_stream, format):
     return thumb_io
 
 
+def display_file_with_thumbnail(file):
+    if file.get('thumbnail_url'):
+        link = f"[![Thumbnail]({file['thumbnail_url']})]({file['url']})"
+        st.markdown(link, unsafe_allow_html=True)
+    else:
+        st.markdown(f"[{file['filename']}]({file['url']})")
+
+
+def pdf_page_to_image(pdf_stream):
+    doc = fitz.open("pdf", pdf_stream)
+    page = doc.load_page(0)
+
+    pix = page.get_pixmap(matrix=fitz.Matrix(300 / 72, 300 / 72))
+
+    img_bytes = io.BytesIO()
+    pix.save(img_bytes, "png")
+    img_bytes.seek(0)
+
+    doc.close()
+    return img_bytes
+
+
 def upload_file(uploaded_file):
     blob = bucket.blob(f"{username}/{uuid.uuid4()}_{uploaded_file.name}")
     blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
 
     if uploaded_file.type.startswith('image/'):
         thumbnail_stream = create_thumbnail(uploaded_file, uploaded_file.type.split('/')[-1])
-        thumb_blob = bucket.blob(f"{username}/{uuid.uuid4()}_thumb_{uploaded_file.name}")
-        thumb_blob.upload_from_string(thumbnail_stream.getvalue(), content_type=uploaded_file.type)
-
-        url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
-        thumb_url = thumb_blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
     else:
-        url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
-        thumb_url = None  # No thumbnail for non-image files
+        thumbnail_stream = pdf_page_to_image(uploaded_file.getvalue())
+
+    thumb_blob = bucket.blob(f"{username}/{uuid.uuid4()}_thumb_{uploaded_file.name}")
+    thumb_blob.upload_from_string(thumbnail_stream.getvalue(), content_type=uploaded_file.type)
+
+    url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
+    thumb_url = thumb_blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
+
 
     doc_ref = db.collection('users').document(username).collection('documents').document()
     doc_ref.set({
@@ -203,16 +226,6 @@ def upload_file(uploaded_file):
     })
 
     return doc_ref.get().to_dict()
-
-
-def display_file_with_thumbnail(file):
-    """
-    Display file link and thumbnail if available.
-    """
-    if file.get('thumbnail_url'):
-        st.markdown(f"![Thumbnail]({file['thumbnail_url']})")  # Display thumbnail image
-    else:
-        st.markdown(f"[{file['filename']}]({file['url']})")  # Link to the original file
 
 
 st.title("Documents")
