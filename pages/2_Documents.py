@@ -179,5 +179,7 @@ if st.session_state.logged_in:
         file_extension = file_metadata['filename'].split('.')[-1].lower()
         response = requests.get(file_metadata['url'])
         if response.status_code == 200:
-            st.write('succes')
+            st.write('success')
+        else:
+            st.write(f"failed: {response.status_code}")
 
