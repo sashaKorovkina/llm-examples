@@ -157,13 +157,11 @@ def get_last_file():
 
 def check_file(file):
     st.write(f'The existing files are {file}')
-    # file_metadata = files[file_index]
-    st.write(file)
     response = requests.get(file['url'])
     if response.status_code == 200:
-        st.write('success')
+        st.write(f"Succes: {file['url']}")
     else:
-        st.write(f"failed: {response.status_code}")
+        st.write(f"Failed: {response.status_code}")
 
 
 st.title("Documents")
@@ -174,17 +172,6 @@ if st.session_state.logged_in:
     files = get_existing_files()
     for file in files:
         check_file(file)
-    # if files:
-    #     num_files = len(files)
-    #     for file_index, file in enumerate(files):
-    #         st.write(f'The existing files are {file}')
-    #         file_metadata = files[file_index]
-    #         st.write(file_metadata)
-    #         response = requests.get(file_metadata['url'])
-    #         if response.status_code == 200:
-    #             st.write('success')
-    #         else:
-    #             st.write(f"failed: {response.status_code}")
 
     uploaded_file = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
                                       accept_multiple_files=False)
