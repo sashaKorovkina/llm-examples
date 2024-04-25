@@ -160,8 +160,7 @@ def check_file(file):
     if response.status_code == 200:
         st.write(f"Succes: {file['url']}")
     else:
-        st.write(f"Failed: {response.status_code}")
-        st.write(file['filename'])
+        st.write(f"Failed: {response.status_code} file name: {file['filename']}")
 
 
 st.title("Documents")
