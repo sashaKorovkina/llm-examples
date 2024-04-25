@@ -147,11 +147,12 @@ if st.session_state.logged_in:
     docs_ref = db.collection('users').document(username).collection('documents')
     docs = docs_ref.get()
     files = [doc.to_dict() for doc in docs]
-    st.write(f'The existing files are {files}')
+
 
     if files:
         num_files = len(files)
         for file_index, file in enumerate(files):
+            st.write(f'The existing files are {file}')
             file_metadata = files[file_index]
             st.write(file_metadata)
             response = requests.get(file_metadata['url'])
