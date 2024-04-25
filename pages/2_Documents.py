@@ -175,11 +175,12 @@ if st.session_state.logged_in:
         st.write(str(files))
         num_files = len(files)
         file_index = 0
-        file_metadata = files[file_index]
-        file_extension = file_metadata['filename'].split('.')[-1].lower()
-        response = requests.get(file_metadata['url'])
-        if response.status_code == 200:
-            st.write('success')
-        else:
-            st.write(f"failed: {response.status_code}")
+        for file_index, file in enumerate(files):
+            file_metadata = files[file_index]
+            file_extension = file_metadata['filename'].split('.')[-1].lower()
+            response = requests.get(file_metadata['url'])
+            if response.status_code == 200:
+                st.write('success')
+            else:
+                st.write(f"failed: {response.status_code}")
 
