@@ -168,41 +168,31 @@ def check_file(file):
 
 
 def create_thumbnail(image_stream, format):
-    """
-    Create a thumbnail of the provided image and return it as bytes.
-    """
-    size = (128, 128)  # Set the size of the thumbnail
+    size = (128, 128)
     image = Image.open(image_stream)
     image.thumbnail(size)
 
-    thumb_io = io.BytesIO()  # Create a BytesIO object to save the thumbnail
+    thumb_io = io.BytesIO()
     image.save(thumb_io, format, quality=95)
-    thumb_io.seek(0)  # Move to the beginning of the BytesIO buffer
+    thumb_io.seek(0)
     return thumb_io
 
 
 def upload_file(uploaded_file):
-    """
-    Upload a file and its thumbnail to Google Cloud Storage.
-    """
-    # Create the main file blob
     blob = bucket.blob(f"{username}/{uuid.uuid4()}_{uploaded_file.name}")
     blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
 
-    # Create and upload the thumbnail if it's an image
     if uploaded_file.type.startswith('image/'):
         thumbnail_stream = create_thumbnail(uploaded_file, uploaded_file.type.split('/')[-1])
         thumb_blob = bucket.blob(f"{username}/{uuid.uuid4()}_thumb_{uploaded_file.name}")
         thumb_blob.upload_from_string(thumbnail_stream.getvalue(), content_type=uploaded_file.type)
 
-        # Generate URLs for both files
         url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
         thumb_url = thumb_blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
     else:
         url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
         thumb_url = None  # No thumbnail for non-image files
 
-    # Store document metadata
     doc_ref = db.collection('users').document(username).collection('documents').document()
     doc_ref.set({
         'filename': uploaded_file.name,
@@ -221,7 +211,7 @@ def display_file_with_thumbnail(file):
     """
     if file.get('thumbnail_url'):
         st.markdown(f"![Thumbnail]({file['thumbnail_url']})")  # Display thumbnail image
-    st.markdown(f"[{file['filename']}]({file['url']})")  # Link to the original file
+    # st.markdown(f"[{file['filename']}]({file['url']})")  # Link to the original file
 
 
 st.title("Documents")
