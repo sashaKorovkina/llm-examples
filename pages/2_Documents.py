@@ -139,14 +139,20 @@ def nav_page(page_name, timeout_secs=3):
     """ % (page_name, timeout_secs)
     html(nav_script)
 
+
+def get_existing_files():
+    docs_ref = db.collection('users').document(username).collection('documents')
+    docs = docs_ref.get()
+    files = [doc.to_dict() for doc in docs]
+    return files
+
+
 st.title("Documents")
 # Page access control
 if st.session_state.logged_in:
     username = st.session_state.username
 
-    docs_ref = db.collection('users').document(username).collection('documents')
-    docs = docs_ref.get()
-    files = [doc.to_dict() for doc in docs]
+    files = get_existing_files()
 
     if files:
         num_files = len(files)
@@ -179,20 +185,6 @@ if st.session_state.logged_in:
             'uploaded_at': firestore.SERVER_TIMESTAMP
         })
         st.write(f'Current document is: {doc_ref}')
-        docs_ref = db.collection('users').document(username).collection('documents')
-        docs = docs_ref.get()
-        files = [doc.to_dict() for doc in docs]
 
-        if files:
-            num_files = len(files) - 1
-            for file_index, file in enumerate(files):
-                st.write(f'The new file are {file}')
-                file_metadata = files[num_files]
-                st.write(file_metadata)
-                response = requests.get(file_metadata['url'])
-                if response.status_code == 200:
-                    st.write('success')
-                else:
-                    st.write(f"failed: {response.status_code}")
 
 
