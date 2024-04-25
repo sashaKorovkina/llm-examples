@@ -211,7 +211,8 @@ def display_file_with_thumbnail(file):
     """
     if file.get('thumbnail_url'):
         st.markdown(f"![Thumbnail]({file['thumbnail_url']})")  # Display thumbnail image
-    # st.markdown(f"[{file['filename']}]({file['url']})")  # Link to the original file
+    else:
+        st.markdown(f"[{file['filename']}]({file['url']})")  # Link to the original file
 
 
 st.title("Documents")
