@@ -147,24 +147,44 @@ def get_existing_files():
     return files
 
 
+def get_last_file():
+    docs_ref = db.collection('users').document(username).collection('documents')
+    docs = docs_ref.get()
+    files = [doc.to_dict() for doc in docs]
+    file = files[len(files)-1]
+    return file
+
+
+def check_file(file):
+    st.write(f'The existing files are {file}')
+    # file_metadata = files[file_index]
+    st.write(file)
+    response = requests.get(file['url'])
+    if response.status_code == 200:
+        st.write('success')
+    else:
+        st.write(f"failed: {response.status_code}")
+
+
 st.title("Documents")
 # Page access control
 if st.session_state.logged_in:
     username = st.session_state.username
 
     files = get_existing_files()
-    st.write(files)
-    if files:
-        num_files = len(files)
-        for file_index, file in enumerate(files):
-            st.write(f'The existing files are {file}')
-            file_metadata = files[file_index]
-            st.write(file_metadata)
-            response = requests.get(file_metadata['url'])
-            if response.status_code == 200:
-                st.write('success')
-            else:
-                st.write(f"failed: {response.status_code}")
+    for file in files:
+        check_file(file)
+    # if files:
+    #     num_files = len(files)
+    #     for file_index, file in enumerate(files):
+    #         st.write(f'The existing files are {file}')
+    #         file_metadata = files[file_index]
+    #         st.write(file_metadata)
+    #         response = requests.get(file_metadata['url'])
+    #         if response.status_code == 200:
+    #             st.write('success')
+    #         else:
+    #             st.write(f"failed: {response.status_code}")
 
     uploaded_file = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
                                       accept_multiple_files=False)
@@ -185,6 +205,6 @@ if st.session_state.logged_in:
             'uploaded_at': firestore.SERVER_TIMESTAMP
         })
         st.write(f'Current document is: {doc_ref}')
-
-
+        file = get_last_file()
+        check_file(file)
 
