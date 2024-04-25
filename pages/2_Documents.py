@@ -145,7 +145,7 @@ if st.session_state.logged_in:
     username = st.session_state.username
 
     uploaded_file = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
-                                      accept_multiple_files=True)
+                                      accept_multiple_files=False)
 
     if uploaded_file:
         blob = bucket.blob(f"{st.session_state.username}/{uuid.uuid4()}_{uploaded_file.name}")
