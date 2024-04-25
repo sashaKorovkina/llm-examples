@@ -194,7 +194,7 @@ if st.session_state.logged_in:
         blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
 
         # Get the URL of the uploaded file
-        url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10), method='GET')
+        url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
 
         # Store the document metadata in Firestore under the user's 'documents' subcollection
         doc_ref = db.collection('users').document(st.session_state.username).collection('documents').document()
