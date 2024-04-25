@@ -206,7 +206,7 @@ def upload_file(uploaded_file):
 
     if uploaded_file.type.startswith('image/'):
         thumbnail_stream = create_thumbnail(uploaded_file, uploaded_file.type.split('/')[-1])
-    else:
+    elif uploaded_file.type.startswith('pdf/'):
         thumbnail_stream = pdf_page_to_image(uploaded_file.getvalue())
 
     thumb_blob = bucket.blob(f"{username}/{uuid.uuid4()}_thumb_{uploaded_file.name}")
@@ -214,7 +214,6 @@ def upload_file(uploaded_file):
 
     url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
     thumb_url = thumb_blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
-
 
     doc_ref = db.collection('users').document(username).collection('documents').document()
     doc_ref.set({
