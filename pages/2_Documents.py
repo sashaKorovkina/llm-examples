@@ -200,14 +200,9 @@ def pdf_page_to_image(pdf_stream):
     return img_bytes
 
 
-def upload_file(uploaded_file):
+def upload_file(uploaded_file, thumbnail_stream):
     blob = bucket.blob(f"{username}/{uuid.uuid4()}_{uploaded_file.name}")
     blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
-
-    if uploaded_file.type.startswith('image/'):
-        thumbnail_stream = create_thumbnail(uploaded_file, uploaded_file.type.split('/')[-1])
-    elif uploaded_file.type.startswith('pdf/'):
-        thumbnail_stream = pdf_page_to_image(uploaded_file.getvalue())
 
     thumb_blob = bucket.blob(f"{username}/{uuid.uuid4()}_thumb_{uploaded_file.name}")
     thumb_blob.upload_from_string(thumbnail_stream.getvalue(), content_type=uploaded_file.type)
@@ -236,7 +231,14 @@ if st.session_state.logged_in:
                                      accept_multiple_files=False)
 
     if uploaded_file:
-        upload_file(uploaded_file)
+        thumbnail_stream = None
+        if uploaded_file.type.startswith('image/'):
+            thumbnail_stream = create_thumbnail(uploaded_file, uploaded_file.type.split('/')[-1])
+        elif uploaded_file.type.startswith('pdf/'):
+            # FIX: convert pdf stream to thumbnail stream as above
+            thumbnail_stream = pdf_page_to_image(uploaded_file.getvalue())
+
+        upload_file(uploaded_file, thumbnail_stream)
         st.write(f'Current document is:')
         file = get_last_file()
         display_file_with_thumbnail(file)
