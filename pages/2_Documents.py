@@ -184,10 +184,10 @@ if st.session_state.logged_in:
         files = [doc.to_dict() for doc in docs]
 
         if files:
-            num_files = len(files)
+            num_files = len(files) - 1
             for file_index, file in enumerate(files):
                 st.write(f'The new file are {file}')
-                file_metadata = files[len(files)]
+                file_metadata = files[num_files]
                 st.write(file_metadata)
                 response = requests.get(file_metadata['url'])
                 if response.status_code == 200:
