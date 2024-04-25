@@ -149,6 +149,17 @@ if st.session_state.logged_in:
     files = [doc.to_dict() for doc in docs]
     st.write(f'The existing files are {files}')
 
+    if files:
+        num_files = len(files)
+        for file_index, file in enumerate(files):
+            file_metadata = files[file_index]
+            st.write(file_metadata)
+            response = requests.get(file_metadata['url'])
+            if response.status_code == 200:
+                st.write('success')
+            else:
+                st.write(f"failed: {response.status_code}")
+
     uploaded_file = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
                                       accept_multiple_files=False)
 
@@ -169,14 +180,5 @@ if st.session_state.logged_in:
         })
         st.write(f'Current document is: {doc_ref}')
 
-    if files:
-        num_files = len(files)
-        for file_index, file in enumerate(files):
-            file_metadata = files[file_index]
-            st.write(file_metadata)
-            response = requests.get(file_metadata['url'])
-            if response.status_code == 200:
-                st.write('success')
-            else:
-                st.write(f"failed: {response.status_code}")
+
 
