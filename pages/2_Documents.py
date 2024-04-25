@@ -145,11 +145,10 @@ if st.session_state.logged_in:
     username = st.session_state.username
 
     uploaded_files = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
-                                      accept_multiple_files=True)
+                                      accept_multiple_files=False)
 
     if uploaded_files:
         for uploaded_file in uploaded_files:
-            # Generate a unique ID for the file within Firebase storage
             blob = bucket.blob(f"{st.session_state.username}/{uuid.uuid4()}_{uploaded_file.name}")
             blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
 
