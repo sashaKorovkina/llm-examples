@@ -166,7 +166,6 @@ if st.session_state.logged_in:
     docs_ref = db.collection('users').document(username).collection('documents')
     docs = docs_ref.get()
 
-
     docs_ref = db.collection('users').document(username).collection('documents')
     docs = docs_ref.get()
     files = [doc.to_dict() for doc in docs]
@@ -176,4 +175,14 @@ if st.session_state.logged_in:
         num_files = len(files)
         num_rows = (num_files + 2) // 3
         rows = [st.container() for _ in range(num_rows)]
+        file_index = 0
+        for row in rows:
+            cols = st.columns(3)
+            for col in cols:
+                if file_index < num_files:
+                    file_metadata = files[file_index]
+                    file_extension = file_metadata['filename'].split('.')[-1].lower()
+                    response = requests.get(file_metadata['url'])
+                    if response.status_code == 200:
+                        st.write('succes')
 
