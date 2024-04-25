@@ -157,8 +157,11 @@ def get_last_file():
 
 def check_file(file):
     response = requests.get(file['url'])
+    response_url = file['url']
+    response_filename = file['filename']
+    markdown = st.markdown(f"[{response_filename}]({response_url}")
     if response.status_code == 200:
-        st.write(f"Succes: {file['url']}")
+        st.write(f"Succes: {markdown}")
     else:
         st.write(f"Failed: {response.status_code} file name: {file['filename']}")
 
