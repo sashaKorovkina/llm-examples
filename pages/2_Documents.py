@@ -153,7 +153,7 @@ if st.session_state.logged_in:
     username = st.session_state.username
 
     files = get_existing_files()
-
+    st.write(files)
     if files:
         num_files = len(files)
         for file_index, file in enumerate(files):
