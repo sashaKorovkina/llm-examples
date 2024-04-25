@@ -161,6 +161,7 @@ def check_file(file):
         st.write(f"Succes: {file['url']}")
     else:
         st.write(f"Failed: {response.status_code}")
+        st.write(file['filename'])
 
 
 st.title("Documents")
