@@ -172,15 +172,15 @@ st.title("Documents")
 if st.session_state.logged_in:
     username = st.session_state.username
 
+    files = get_existing_files()
+    if files:
+        st.write("The existing files are:")
+        for file in files:
+            check_file(file)
+
     uploaded_file = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
                                      accept_multiple_files=False)
 
-    if not uploaded_file:
-        files = get_existing_files()
-        if files:
-            st.write("The existing files are:")
-            for file in files:
-                check_file(file)
 
     if uploaded_file:
         blob = bucket.blob(f"{st.session_state.username}/{uuid.uuid4()}_{uploaded_file.name}")
