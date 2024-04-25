@@ -167,6 +167,63 @@ def check_file(file):
         st.write(f"Failed: {response.status_code} file name: {file['filename']}")
 
 
+def create_thumbnail(image_stream, format):
+    """
+    Create a thumbnail of the provided image and return it as bytes.
+    """
+    size = (128, 128)  # Set the size of the thumbnail
+    image = Image.open(image_stream)
+    image.thumbnail(size)
+
+    thumb_io = io.BytesIO()  # Create a BytesIO object to save the thumbnail
+    image.save(thumb_io, format, quality=95)
+    thumb_io.seek(0)  # Move to the beginning of the BytesIO buffer
+    return thumb_io
+
+
+def upload_file(uploaded_file):
+    """
+    Upload a file and its thumbnail to Google Cloud Storage.
+    """
+    # Create the main file blob
+    blob = bucket.blob(f"{username}/{uuid.uuid4()}_{uploaded_file.name}")
+    blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
+
+    # Create and upload the thumbnail if it's an image
+    if uploaded_file.type.startswith('image/'):
+        thumbnail_stream = create_thumbnail(uploaded_file, uploaded_file.type.split('/')[-1])
+        thumb_blob = bucket.blob(f"{username}/{uuid.uuid4()}_thumb_{uploaded_file.name}")
+        thumb_blob.upload_from_string(thumbnail_stream.getvalue(), content_type=uploaded_file.type)
+
+        # Generate URLs for both files
+        url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
+        thumb_url = thumb_blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
+    else:
+        url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
+        thumb_url = None  # No thumbnail for non-image files
+
+    # Store document metadata
+    doc_ref = db.collection('users').document(username).collection('documents').document()
+    doc_ref.set({
+        'filename': uploaded_file.name,
+        'content_type': uploaded_file.type,
+        'url': url,
+        'thumbnail_url': thumb_url,
+        'uploaded_at': firestore.SERVER_TIMESTAMP
+    })
+
+    return doc_ref.get().to_dict()
+
+
+def display_file_with_thumbnail(file):
+    """
+    Display file link and thumbnail if available.
+    """
+    if file.get('thumbnail_url'):
+        st.markdown(f"![Thumbnail]({file['thumbnail_url']})")  # Display thumbnail image
+    st.markdown(f"[{file['filename']}]({file['url']})")  # Link to the original file
+
+
 st.title("Documents")
 # Page access control
 if st.session_state.logged_in:
@@ -176,26 +233,13 @@ if st.session_state.logged_in:
                                      accept_multiple_files=False)
 
     if uploaded_file:
-        blob = bucket.blob(f"{st.session_state.username}/{uuid.uuid4()}_{uploaded_file.name}")
-        blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
-
-        # Get the URL of the uploaded file
-        url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
-
-        # Store the document metadata in Firestore under the user's 'documents' subcollection
-        doc_ref = db.collection('users').document(st.session_state.username).collection('documents').document()
-        doc_ref.set({
-            'filename': uploaded_file.name,
-            'content_type': uploaded_file.type,
-            'url': url,  # This is a temporary URL for access, you may want to handle this differently
-            'uploaded_at': firestore.SERVER_TIMESTAMP
-        })
+        upload_file(uploaded_file)
         st.write(f'Current document is:')
         file = get_last_file()
-        check_file(file)
+        display_file_with_thumbnail(file)
 
     files = get_existing_files()
     if files:
         st.write("The existing files are:")
         for file in files:
-            check_file(file)
+            display_file_with_thumbnail(file)
