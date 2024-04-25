@@ -178,7 +178,12 @@ if st.session_state.logged_in:
 
     # Step 4: Display all files
     if existing_files:
-        for filename, file_info in existing_files.items():
+        num_files = len(existing_files)
+        file_index = 0
+        if file_index < num_files:
+            file_metadata = existing_files[file_index]
+            file_extension = file_metadata['filename'].split('.')[-1].lower()
+            st.write(file_extension)
             for filename, file_info in existing_files.items():
                 st.write(f"Filename: {filename}")
                 st.write(f"Content Type: {file_info['content_type']}")
