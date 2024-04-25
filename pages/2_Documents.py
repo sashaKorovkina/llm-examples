@@ -144,6 +144,11 @@ st.title("Documents")
 if st.session_state.logged_in:
     username = st.session_state.username
 
+    docs_ref = db.collection('users').document(username).collection('documents')
+    docs = docs_ref.get()
+    files = [doc.to_dict() for doc in docs]
+    st.write(f'The existing files are {files}')
+
     uploaded_file = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
                                       accept_multiple_files=False)
 
@@ -152,7 +157,7 @@ if st.session_state.logged_in:
         blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
 
         # Get the URL of the uploaded file
-        url = blob.public_url
+        url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10), method='GET')
 
         # Store the document metadata in Firestore under the user's 'documents' subcollection
         doc_ref = db.collection('users').document(st.session_state.username).collection('documents').document()
@@ -162,13 +167,7 @@ if st.session_state.logged_in:
             'url': url,  # This is a temporary URL for access, you may want to handle this differently
             'uploaded_at': firestore.SERVER_TIMESTAMP
         })
-
-    docs_ref = db.collection('users').document(username).collection('documents')
-    docs = docs_ref.get()
-
-    docs_ref = db.collection('users').document(username).collection('documents')
-    docs = docs_ref.get()
-    files = [doc.to_dict() for doc in docs]
+        st.write(f'Current document is: {doc_ref}')
 
     if files:
         num_files = len(files)
