@@ -161,7 +161,7 @@ def check_file(file):
     response_filename = file['filename']
     markdown = st.markdown(f"[{response_filename}]({response_url})")
     if response.status_code == 200:
-        st.write(f"Succes: {markdown}")
+        st.write(f"Succes:")
     else:
         st.write(f"Failed: {response.status_code} file name: {file['filename']}")
 
