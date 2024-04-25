@@ -179,12 +179,20 @@ if st.session_state.logged_in:
             'uploaded_at': firestore.SERVER_TIMESTAMP
         })
         st.write(f'Current document is: {doc_ref}')
-        file_metadata = files[file_index]
-        st.write(file_metadata)
-        response = requests.get(file_metadata['url'])
-        if response.status_code == 200:
-            st.write('success')
-        else:
-            st.write(f"failed: {response.status_code}")
+        docs_ref = db.collection('users').document(username).collection('documents')
+        docs = docs_ref.get()
+        files = [doc.to_dict() for doc in docs]
+
+        if files:
+            num_files = len(files)
+            for file_index, file in enumerate(files):
+                st.write(f'The new file are {file}')
+                file_metadata = files[len(files)]
+                st.write(file_metadata)
+                response = requests.get(file_metadata['url'])
+                if response.status_code == 200:
+                    st.write('success')
+                else:
+                    st.write(f"failed: {response.status_code}")
 
 
