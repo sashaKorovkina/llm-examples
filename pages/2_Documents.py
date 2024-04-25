@@ -164,13 +164,12 @@ if st.session_state.logged_in:
                         file_metadata = files[file_index]
                         file_extension = file_metadata['filename'].split('.')[-1].lower()
                         with col:
-                            try:
-                                response = requests.get(file_metadata['url'])
-                                if response.status_code == 200:
-                                    bytes_data = io.BytesIO(response.content)
-                                    if file_extension == 'pdf':
-                                        doc = fitz.open("pdf", bytes_data.getvalue())  # Open PDF with PyMuPDF
-                                        page = doc.load_page(0)  # Assume you want the first page
-                                        pix = page.get_pixmap()
-                                        img = Image.open(io.BytesIO(pix.tobytes()))
-                                        st.image(img, caption=f"{file_metadata['filename']}", use_column_width=True)
+                            response = requests.get(file_metadata['url'])
+                            if response.status_code == 200:
+                                bytes_data = io.BytesIO(response.content)
+                                if file_extension == 'pdf':
+                                    doc = fitz.open("pdf", bytes_data.getvalue())  # Open PDF with PyMuPDF
+                                    page = doc.load_page(0)  # Assume you want the first page
+                                    pix = page.get_pixmap()
+                                    img = Image.open(io.BytesIO(pix.tobytes()))
+                                    st.image(img, caption=f"{file_metadata['filename']}", use_column_width=True)
