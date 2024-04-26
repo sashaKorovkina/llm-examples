@@ -185,6 +185,9 @@ def display_file_with_thumbnail(file):
     else:
         st.markdown(f"[{file['filename']}]({file['url']})")
 
+def parse_text():
+    st.write('parsing...')
+
 
 def pdf_page_to_image(pdf_stream):
     st.write('processing pdf in pdf_page_to_image')
@@ -254,3 +257,4 @@ if st.session_state.logged_in:
         st.write("The existing files are:")
         for file in files:
             display_file_with_thumbnail(file)
+            parse_text()
