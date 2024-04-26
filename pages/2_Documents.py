@@ -265,6 +265,7 @@ if st.session_state.logged_in:
 
     files = get_existing_files()
     if files:
+        st.write(f'All files document are:')
         for file in files:
             display_file_with_thumbnail(file)
         # st.write("The existing files are:")
