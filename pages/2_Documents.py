@@ -264,24 +264,30 @@ if st.session_state.logged_in:
         display_file_with_thumbnail(file)
 
     files = get_existing_files()
-
     if files:
         st.write('All documents are:')
-        if 'selected_files' not in st.session_state:
-            st.session_state.selected_files = []  # Initialize session state for selected files
+        selected_files = []  # Initialize the list to hold selected files
 
         for index, file in enumerate(files):
             display_file_with_thumbnail(file)
-            key = f"{index}-{file['filename']}"  # Unique key for each file checkbox
-            # Checkbox to select the file
-            if st.checkbox(f"Select {file['filename']}", key=key, value=False):
-                if file not in st.session_state.selected_files:
-                    st.session_state.selected_files.append(file)
+            key = f"{index}-{file['filename']}"  # Ensuring uniqueness using index and filename
+            if st.checkbox(f"Select {file['filename']}", key=key):
+                selected_files.append(file)
 
-            # Button to show selected files
         if st.button('Show Selected Files'):
-            st.write('Selected files:')
-            for file in st.session_state.selected_files:
+            for file in selected_files:
                 st.write(file['filename'])
-            # Reset selected files after showing them
-            st.session_state.selected_files = []
+        # st.write("The existing files are:")
+        # display_file_with_thumbnail(file)
+        # selected_files = []  # List to store selected files
+        #
+        # # Display files with a checkbox for each one
+        # for file in files:
+        #     if st.checkbox(f"Select {file['filename']}", key=file['filename']):
+        #         selected_files.append(file)
+
+        # # Button to perform actions on selected files
+        # if st.button('Process Selected Files'):
+        #     for file in selected_files:
+        #         display_file_with_thumbnail(file)
+        #         parse_text(file)
