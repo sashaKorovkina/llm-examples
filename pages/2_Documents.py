@@ -267,15 +267,18 @@ if st.session_state.logged_in:
 
     if files:
         st.write('All documents are:')
-        selected_files = []  # Initialize the list to hold selected files
+        if 'selected_files' not in st.session_state:
+            st.session_state.selected_files = []  # Initialize session state for selected files
 
         for index, file in enumerate(files):
             display_file_with_thumbnail(file)
-            key = f"{index}-{file['filename']}"  # Ensuring uniqueness using index and filename
+            key = f"{index}-{file['filename']}"  # Unique key for each file checkbox
             if st.checkbox(f"Select {file['filename']}", key=key):
-                selected_files.append(file)
+                if file not in st.session_state.selected_files:
+                    st.session_state.selected_files.append(file)
 
         if st.button('Show Selected Files'):
-            for file in selected_files:
+            st.write('Selected files:')
+            for file in st.session_state.selected_files:
                 st.write(file['filename'])
 
