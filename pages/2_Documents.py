@@ -273,8 +273,8 @@ if st.session_state.logged_in:
             if st.checkbox(f"Select {file['filename']}", key=file['filename']):
                 selected_files.append(file)
 
-        # Button to perform actions on selected files
-        if st.button('Process Selected Files'):
-            for file in selected_files:
-                display_file_with_thumbnail(file)
-                parse_text(file)
+        # # Button to perform actions on selected files
+        # if st.button('Process Selected Files'):
+        #     for file in selected_files:
+        #         display_file_with_thumbnail(file)
+        #         parse_text(file)
