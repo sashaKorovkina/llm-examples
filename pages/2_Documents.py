@@ -175,7 +175,6 @@ def create_thumbnail(image_stream, format):
     thumb_io = io.BytesIO()
     image.save(thumb_io, format, quality=95)
     thumb_io.seek(0)
-    st.write(f'I am the type {thumb_io.dtype()}')
     return thumb_io
 
 
