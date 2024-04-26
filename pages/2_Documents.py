@@ -233,6 +233,17 @@ def upload_file(uploaded_file, thumbnail_stream):
 
 
 st.title("Documents")
+
+def display_file_with_thumbnail(file):
+    if file.get('thumbnail_url'):
+        st.image(file['thumbnail_url'], caption=file['filename'], width=300)
+    else:
+        st.markdown(f"[{file['filename']}]({file['url']})")
+
+def parse_text(file):
+    # Dummy function to represent parsing
+    st.write(f"Parsing text from {file['filename']}...")
+
 # Page access control
 if st.session_state.logged_in:
     username = st.session_state.username
@@ -253,8 +264,18 @@ if st.session_state.logged_in:
         display_file_with_thumbnail(file)
 
     files = get_existing_files()
+
     if files:
         st.write("The existing files are:")
+        selected_files = []  # List to store selected files
+
+        # Display files with a checkbox for each one
         for file in files:
-            display_file_with_thumbnail(file)
-            parse_text()
+            if st.checkbox(f"Select {file['filename']}", key=file['filename']):
+                selected_files.append(file)
+
+        # Button to perform actions on selected files
+        if st.button('Process Selected Files'):
+            for file in selected_files:
+                display_file_with_thumbnail(file)
+                parse_text(file)
