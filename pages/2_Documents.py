@@ -234,6 +234,7 @@ if st.session_state.logged_in:
     if uploaded_file:
         thumbnail_stream = None
         if uploaded_file.type.startswith('image/'):
+            st.write('uploading an image')
             thumbnail_stream = create_thumbnail(uploaded_file, uploaded_file.type.split('/')[-1])
         elif uploaded_file.type.startswith('pdf/'):
             st.write('uploading a pdf')
