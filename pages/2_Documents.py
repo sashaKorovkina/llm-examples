@@ -187,6 +187,7 @@ def display_file_with_thumbnail(file):
 
 
 def pdf_page_to_image(pdf_stream):
+    st.write('processing pdf in pdf_page_to_image')
     doc = fitz.open("pdf", pdf_stream)
     page = doc.load_page(0)
 
