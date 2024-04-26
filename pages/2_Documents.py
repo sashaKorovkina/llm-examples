@@ -189,15 +189,16 @@ def display_file_with_thumbnail(file):
 def pdf_page_to_image(pdf_stream):
     st.write('processing pdf in pdf_page_to_image')
     doc = fitz.open("pdf", pdf_stream)
-    page = doc.load_page(0)
+    page = doc.load_page(0)  # Load the first page
 
+    # Render page to an image (pixmap)
     pix = page.get_pixmap(matrix=fitz.Matrix(300 / 72, 300 / 72))
 
     img_bytes = io.BytesIO()
-    pix.save(img_bytes, "png")
-    img_bytes.seek(0)
+    pix.writePNG(img_bytes)  # Write the pixmap as PNG to a bytes buffer
+    img_bytes.seek(0)  # Rewind the buffer to the beginning
 
-    doc.close()
+    doc.close()  # Always close the document to free resources
     return img_bytes
 
 
