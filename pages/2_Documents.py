@@ -265,5 +265,20 @@ if st.session_state.logged_in:
 
     files = get_existing_files()
     if files:
-        st.write('All documents are:')
-        display_file_with_thumbnail(file)
+        st.write(f'All files document is:')
+        for file in files:
+            display_file_with_thumbnail(file)
+        # st.write("The existing files are:")
+        # display_file_with_thumbnail(file)
+        # selected_files = []  # List to store selected files
+        #
+        # # Display files with a checkbox for each one
+        # for file in files:
+        #     if st.checkbox(f"Select {file['filename']}", key=file['filename']):
+        #         selected_files.append(file)
+
+        # # Button to perform actions on selected files
+        # if st.button('Process Selected Files'):
+        #     for file in selected_files:
+        #         display_file_with_thumbnail(file)
+        #         parse_text(file)
