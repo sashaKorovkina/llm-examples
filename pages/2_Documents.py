@@ -268,16 +268,13 @@ if st.session_state.logged_in:
         st.write('All documents are:')
         selected_files = []  # Initialize the list to hold selected files
 
-        # Iterate over each file to display it and create a checkbox for selection
-        for file in files:
+        for index, file in enumerate(files):
             display_file_with_thumbnail(file)
-            # Create a checkbox for each file inside the loop
-            if st.checkbox(f"Select {file['filename']}", key=file['filename']):
+            key = f"{index}-{file['filename']}"  # Ensuring uniqueness using index and filename
+            if st.checkbox(f"Select {file['filename']}", key=key):
                 selected_files.append(file)
 
-        # Process selected files, for example, showing which were selected
         if st.button('Show Selected Files'):
-            st.write('Selected files:')
             for file in selected_files:
                 st.write(file['filename'])
         # st.write("The existing files are:")
