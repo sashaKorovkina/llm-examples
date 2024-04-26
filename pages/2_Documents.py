@@ -195,8 +195,8 @@ def pdf_page_to_image(pdf_stream):
     pix = page.get_pixmap(matrix=fitz.Matrix(300 / 72, 300 / 72))
 
     img_bytes = io.BytesIO()
-    pix.writePNG(img_bytes)  # Write the pixmap as PNG to a bytes buffer
-    img_bytes.seek(0)  # Rewind the buffer to the beginning
+    img_bytes.write(pix.tobytes("png"))  # Convert the pixmap to PNG bytes and write to BytesIO
+    img_bytes.seek(0)  # Rewind the BytesIO to the start
 
     doc.close()  # Always close the document to free resources
     return img_bytes
