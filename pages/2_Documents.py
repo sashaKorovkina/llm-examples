@@ -191,7 +191,7 @@ def pdf_page_to_image(pdf_stream):
     doc = fitz.open("pdf", pdf_stream)
     page = doc.load_page(0)
 
-    pix = page.get_pixmap(matrix=fitz.Matrix(300 / 72, 300 / 72))
+    pix = page.get_pixmap(matrix=fitz.Matrix(150 / 72, 150 / 72))
 
     img_bytes = io.BytesIO()
     img_bytes.write(pix.tobytes("png"))
