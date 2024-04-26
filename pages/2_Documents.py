@@ -270,12 +270,14 @@ if st.session_state.logged_in:
         selected_files = []  # List to store selected files
 
         # Display files with a checkbox for each one
-        for file in files:
-            if st.checkbox(f"Select {file['filename']}", key=file['filename']):
+        for index, file in enumerate(files):
+            # Use index to ensure the uniqueness of the key
+            key = f"{index}-{file['filename']}"
+            if st.checkbox(f"Select {file['filename']}", key=key):
                 selected_files.append(file)
 
         # Button to perform actions on selected files
         if st.button('Process Selected Files'):
             for file in selected_files:
                 display_file_with_thumbnail(file)
-                parse_text(file)
+                parse_text(file)  # Assuming parse_text() is a function to process the file
