@@ -212,6 +212,7 @@ def upload_file(uploaded_file, thumbnail_stream):
 
         thumb_url = thumb_blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000),
                                                    method='GET')
+        st.write(str(f'Thumb url is: {thumb_url}'))
     else:
         thumb_url = None
 
