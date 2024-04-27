@@ -205,6 +205,18 @@ def pdf_page_to_image(pdf_stream):
 def pdf_parse_content(pdf_bytes):
     st.write('trying to parse...')
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    pdf_images = []
+    pdf_texts = []  # List to store text from all pages
+
+    for page_index in range(len(doc)):
+        page = doc[page_index]
+        pix = page.get_pixmap()
+        image_data = pix.tobytes()
+        pdf_image = Image.open(io.BytesIO(image_data))
+        pdf_images.append(pdf_image)
+
+        text = pytesseract.image_to_string(pdf_image)
+        pdf_texts.append(text)  # Accumulate text from each page
     st.write('done.')
     pass
 def upload_file(uploaded_file, thumbnail_stream):
