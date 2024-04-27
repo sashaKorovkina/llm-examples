@@ -202,15 +202,10 @@ def pdf_page_to_image(pdf_stream):
     doc.close()
     return img_bytes
 
-def pdf_parse_content(file):
+def pdf_parse_content(pdf_bytes):
     st.write('trying to parse...')
-    bucket = storage.bucket()
-    blob = bucket.blob(file)
-    pdf_bytes = blob.download_as_bytes()
-    # doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-
-    #     pdf_bytes = uploaded_file.getvalue()
-    # st.write('trying to parse...')
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    st.write('done.')
     pass
 def upload_file(uploaded_file, thumbnail_stream):
     blob = bucket.blob(f"{username}/{uuid.uuid4()}_{uploaded_file.name}")
@@ -294,6 +289,7 @@ if st.session_state.logged_in:
 
                 # Download the file as bytes
                 pdf_bytes = blob.download_as_bytes()
+                pdf_parse_content(pdf_bytes)
 
         # st.write("The existing files are:")
         # display_file_with_thumbnail(file)
