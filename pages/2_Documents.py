@@ -205,7 +205,7 @@ def pdf_page_to_image(pdf_stream):
 def pdf_parse_content(file):
     if st.button("Chat to AI", key=f"chat_{file['url']}"):
         st.write('trying to parse...')
-        blob = bucket.blob(file['url'])  # The URL here should be the path to your file in Firebase Storage
+        blob = bucket.blob('gs://elmeto-12de0.appspot.com/nYta7NVFjsZ1yKmm0W7JCSQZfF33/8f2bba67-5528-41c6-9303-c8db9f4ec562_Alexandra Korovkina - Developer CV.pdf')  # The URL here should be the path to your file in Firebase Storage
         pdf_bytes = blob.download_as_bytes()
         st.write('success')
 
