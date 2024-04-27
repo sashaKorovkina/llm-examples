@@ -282,7 +282,7 @@ if st.session_state.logged_in:
                 st.write('I am an image')
             elif file_extension == "pdf":
                 st.write('I am a pdf')
-                file_path = 'nYta7NVFjsZ1yKmm0W7JCSQZfF33/94052005-9e90-43ab-9462-0ee2fa94c51b_Completion of Studies.docx.pdf'
+                file_path = r'nYta7NVFjsZ1yKmm0W7JCSQZfF33/94052005-9e90-43ab-9462-0ee2fa94c51b_Completion of Studies.docx.pdf'
                 pdf_parse_content(file_path)
 
         # st.write("The existing files are:")
