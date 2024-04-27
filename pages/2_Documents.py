@@ -308,7 +308,8 @@ if st.session_state.logged_in:
 
                 # Download the file as bytes
                 pdf_bytes = blob.download_as_bytes()
-                pdf_parse_content(pdf_bytes)
+                if st.button("Chat to AI", key=f"chat_{file['url']}"):
+                    pdf_parse_content(pdf_bytes)
 
         # st.write("The existing files are:")
         # display_file_with_thumbnail(file)
