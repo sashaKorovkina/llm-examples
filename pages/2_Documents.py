@@ -292,6 +292,8 @@ if st.session_state.logged_in:
 
         upload_file(uploaded_file, thumbnail_stream)
         uploaded_file = None
+        st.session_state.clear_file = True
+
         if thumbnail_stream is not None:
             with contextlib.closing(thumbnail_stream):
                 pass
