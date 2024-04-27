@@ -290,9 +290,9 @@ if st.session_state.logged_in:
             thumbnail_stream = pdf_page_to_image(uploaded_file.getvalue())
 
         upload_file(uploaded_file, thumbnail_stream)
-        st.write(f'Current document is:')
-        file = get_last_file()
-        display_file_with_thumbnail(file)
+        # st.write(f'Current document is:')
+        # file = get_last_file()
+        # display_file_with_thumbnail(file)
 
     files = get_existing_files()
 
