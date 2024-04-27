@@ -127,6 +127,8 @@ def get_summary(pdf_bytes, file_name):
         text = pytesseract.image_to_string(pdf_image)
         pdf_texts.append(text)
 
+    st.write(pdf_texts)
+
 def nav_page(page_name, timeout_secs=3):
     nav_script = """
         <script type="text/javascript">
@@ -305,6 +307,7 @@ if st.session_state.logged_in:
                 st.write('I am an image')
             elif file_extension == "pdf":
                 st.write('I am a pdf')
+
                 file_path = r'gs://elmeto-12de0.appspot.com/nYta7NVFjsZ1yKmm0W7JCSQZfF33/94052005-9e90-43ab-9462-0ee2fa94c51b_Completion of Studies.docx.pdf'
                 if file_path.startswith('gs://'):
                     _, path = file_path.split('gs://', 1)
@@ -312,28 +315,11 @@ if st.session_state.logged_in:
                 else:
                     raise ValueError("URL must start with gs://")
 
-                    # Initialize the Google Cloud Storage client
                 blob = bucket.blob(blob_path)
-
-                # Download the file as bytes
                 pdf_bytes = blob.download_as_bytes()
+
                 if st.button("Chat to AI", key=f"chat_{file['url']}"):
                     pdf_parse_content(pdf_bytes)
                 if st.button("Get Summary", key=f"chat_summary_{file['url']}"):
                     get_summary(pdf_bytes, file['filename'])
-                    st.write('getting summary...')
-                    #pdf_parse_content(pdf_bytes)
-        # st.write("The existing files are:")
-        # display_file_with_thumbnail(file)
-        # selected_files = []  # List to store selected files
-        #
-        # # Display files with a checkbox for each one
-        # for file in files:
-        #     if st.checkbox(f"Select {file['filename']}", key=file['filename']):
-        #         selected_files.append(file)
 
-        # # Button to perform actions on selected files
-        # if st.button('Process Selected Files'):
-        #     for file in selected_files:
-        #         display_file_with_thumbnail(file)
-        #         parse_text(file)
