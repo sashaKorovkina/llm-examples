@@ -291,6 +291,7 @@ if st.session_state.logged_in:
             thumbnail_stream = pdf_page_to_image(uploaded_file.getvalue())
 
         upload_file(uploaded_file, thumbnail_stream)
+        uploaded_file = None
         if thumbnail_stream is not None:
             with contextlib.closing(thumbnail_stream):
                 pass
