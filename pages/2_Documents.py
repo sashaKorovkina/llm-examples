@@ -35,7 +35,8 @@ bucket = storage.bucket('elmeto-12de0.appspot.com')
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 
-api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
+
+# INITIALISE FUNCTIONS #################################################################################################
 
 def encode_image(image_path):
   with open(image_path, "rb") as image_file:
@@ -80,14 +81,14 @@ def send_image_to_openai(base64_image):
         except Exception as e:
             st.error(f"Error: {e}")
 
-def send_text_to_openai(text_content, model_engine, unique_key):
+def send_text_to_openai(text_content):
     headers = {
       "Content-Type": "application/json",
       "Authorization": f"Bearer {api_key}"
     }
 
     payload = {
-              "model": f"{model_engine}",
+              "model": f"gpt-3.5-turbo-0125",
               "messages": [
                 {
                     "role": "user",
@@ -97,13 +98,12 @@ def send_text_to_openai(text_content, model_engine, unique_key):
               "max_tokens": 100
             }
 
-    if st.button("Get Explanation", key=unique_key):
-        try:
-            response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
-            explanation = response.json()['choices'][0]['message']['content']
-            st.success(f"Explanation: {explanation}")
-        except Exception as e:
-            st.error(f"Error: {e}")
+    try:
+        response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+        explanation = response.json()['choices'][0]['message']['content']
+        st.success(f"Explanation: {explanation}")
+    except Exception as e:
+        st.error(f"Error: {e}")
 
 def chat_to_ai(file_name):
     # Functionality to chat about the specific PDF
@@ -127,6 +127,8 @@ def get_summary(pdf_bytes, file_name):
         pdf_texts.append(text)
 
     st.write(pdf_texts)
+    send_text_to_openai(pdf_texts)
+
 
 def nav_page(page_name, timeout_secs=3):
     nav_script = """
@@ -264,21 +266,16 @@ def upload_file(uploaded_file, thumbnail_stream):
 
     return doc_ref.get().to_dict()
 
-
-st.title("Documents")
-
 def display_file_with_thumbnail(file):
     if file.get('thumbnail_url'):
         st.image(file['thumbnail_url'], caption=file['filename'], width=300)
     else:
         st.markdown(f"[{file['filename']}]({file['url']})")
 
-def parse_text(file):
-    # Dummy function to represent parsing
-    st.write(f"Parsing text from {file['filename']}...")
+st.title("Documents")
 
-# Page access control
 if st.session_state.logged_in:
+    api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
     username = st.session_state.username
 
     uploaded_file = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
