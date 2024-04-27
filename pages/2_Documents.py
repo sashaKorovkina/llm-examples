@@ -10,6 +10,7 @@ from firebase_admin import firestore, storage
 import uuid
 import datetime
 import fitz
+import contextlib
 
 # CHANGE FOR CLOUD DEPLOY!!!!
 pytesseract.pytesseract.tesseract_cmd = None
@@ -290,6 +291,9 @@ if st.session_state.logged_in:
             thumbnail_stream = pdf_page_to_image(uploaded_file.getvalue())
 
         upload_file(uploaded_file, thumbnail_stream)
+        if thumbnail_stream is not None:
+            with contextlib.closing(thumbnail_stream):
+                pass
         st.write(f'Current document is:')
         file = get_last_file()
         display_file_with_thumbnail(file)
