@@ -310,7 +310,10 @@ if st.session_state.logged_in:
                 st.write('I am a pdf')
 
                 blob_path = file['blob']
+                parts = blob_path.split(',')
+                blob_path = parts[1].strip()
                 st.write(blob_path)
+
                 bucket_name = 'elmeto-12de0.appspot.com'
                 blob = bucket.blob(blob_path)
                 pdf_bytes = blob.download_as_bytes()
