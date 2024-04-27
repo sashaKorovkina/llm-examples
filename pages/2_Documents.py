@@ -284,6 +284,7 @@ if st.session_state.logged_in:
 
     uploaded_file = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
                                      accept_multiple_files=False, key=st.session_state.upload_key)
+    st.session_state.upload_key += 1
 
     if uploaded_file:
         st.write('uploading new file!')
@@ -328,7 +329,6 @@ if st.session_state.logged_in:
                 if st.button("Get Summary", key=f"chat_summary_{file['url']}"):
                     uploaded_file = None
                     st.write('getting sum')
-                    st.session_state.upload_key += 1
                     #get_summary(pdf_bytes, file['filename'])
 else:
     st.write('Register please.')
