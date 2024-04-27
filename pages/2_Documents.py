@@ -205,6 +205,9 @@ def pdf_page_to_image(pdf_stream):
 def pdf_parse_content(file):
     if st.button("Chat to AI", key=f"chat_{file['url']}"):
         st.write('trying to parse...')
+        pdf_bytes = file.getvalue()
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+
     #     pdf_bytes = uploaded_file.getvalue()
     # st.write('trying to parse...')
     pass
