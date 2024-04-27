@@ -290,9 +290,9 @@ if st.session_state.logged_in:
             thumbnail_stream = pdf_page_to_image(uploaded_file.getvalue())
 
         upload_file(uploaded_file, thumbnail_stream)
-        # st.write(f'Current document is:')
-        # file = get_last_file()
-        # display_file_with_thumbnail(file)
+        st.write(f'Current document is:')
+        file = get_last_file()
+        display_file_with_thumbnail(file)
 
     files = get_existing_files()
 
@@ -316,6 +316,7 @@ if st.session_state.logged_in:
                 if st.button("Chat to AI", key=f"chat_{file['url']}"):
                     pdf_parse_content(pdf_bytes)
                 if st.button("Get Summary", key=f"chat_summary_{file['url']}"):
+                    uploaded_file = None
                     st.write('getting sum')
                     #get_summary(pdf_bytes, file['filename'])
 else:
