@@ -127,7 +127,7 @@ def get_summary(pdf_bytes, file_name):
         pdf_texts.append(text)
 
     st.write(pdf_texts)
-    # send_text_to_openai(pdf_texts)
+    send_text_to_openai(pdf_texts)
 
 
 def nav_page(page_name, timeout_secs=3):
