@@ -305,7 +305,6 @@ if st.session_state.logged_in:
     files = get_existing_files()
 
     if files:
-        st.rerun
         st.write(f'All files are:')
         for file in files:
             display_file_with_thumbnail(file)
