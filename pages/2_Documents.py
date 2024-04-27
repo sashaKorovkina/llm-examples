@@ -258,7 +258,7 @@ def upload_file(uploaded_file, thumbnail_stream):
         'filename': uploaded_file.name,
         'content_type': uploaded_file.type,
         'url': url,
-        'blob': blob,
+        'blob': str(blob),
         'thumbnail_url': thumb_url,
         'uploaded_at': firestore.SERVER_TIMESTAMP
     })
