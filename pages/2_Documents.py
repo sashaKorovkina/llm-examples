@@ -275,21 +275,15 @@ def display_file_with_thumbnail(file):
 
 st.title("Documents")
 
-import streamlit as st
-import contextlib
-
 if st.session_state.logged_in:
     api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
     username = st.session_state.username
 
-    uploaded_file = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"], accept_multiple_files=False)
+    uploaded_file = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
+                                     accept_multiple_files=False)
 
-    # Initialize the process flag if not already set
-    if 'file_processed' not in st.session_state:
-        st.session_state.file_processed = False
-
-    if uploaded_file and not st.session_state.file_processed:
-        st.write('Uploading new file!')
+    if uploaded_file:
+        st.write('uploading new file!')
         thumbnail_stream = None
         if uploaded_file.type.startswith('image/'):
             thumbnail_stream = create_thumbnail(uploaded_file, uploaded_file.type.split('/')[-1])
@@ -297,15 +291,12 @@ if st.session_state.logged_in:
             thumbnail_stream = pdf_page_to_image(uploaded_file.getvalue())
 
         upload_file(uploaded_file, thumbnail_stream)
+        uploaded_file = None
+        st.session_state.clear_file = True
 
         if thumbnail_stream is not None:
             with contextlib.closing(thumbnail_stream):
                 pass
-
-        st.session_state.file_processed = True
-        st.experimental_rerun()
-
-    if st.session_state.file_processed:
         st.write(f'Current document is:')
         file = get_last_file()
         display_file_with_thumbnail(file)
@@ -329,17 +320,11 @@ if st.session_state.logged_in:
                 blob = bucket.blob(blob_path)
                 pdf_bytes = blob.download_as_bytes()
 
-                chat_key = f"chat_{file['url']}"
-                summary_key = f"chat_summary_{file['url']}"
-
-                if st.button("Chat to AI", key=chat_key):
+                if st.button("Chat to AI", key=f"chat_{file['url']}"):
                     pdf_parse_content(pdf_bytes)
-
-                if st.button("Get Summary", key=summary_key):
-                    # Ensure the summary is fetched only once per click
-                    if 'summary_processed' not in st.session_state or not st.session_state.summary_processed:
-                        st.write('Getting summary...')
-                        get_summary(pdf_bytes, file['filename'])
-                        st.session_state.summary_processed = True
+                if st.button("Get Summary", key=f"chat_summary_{file['url']}"):
+                    uploaded_file = None
+                    st.write('getting sum')
+                    #get_summary(pdf_bytes, file['filename'])
 else:
     st.write('Register please.')
