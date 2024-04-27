@@ -313,6 +313,8 @@ if st.session_state.logged_in:
                 if file_path.startswith('gs://'):
                     _, path = file_path.split('gs://', 1)
                     bucket_name, blob_path = path.split('/', 1)
+                    st.write(bucket_name)
+                    st.write(blob_path)
                 else:
                     raise ValueError("URL must start with gs://")
 
