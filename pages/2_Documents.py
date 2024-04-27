@@ -282,6 +282,7 @@ if st.session_state.logged_in:
                                      accept_multiple_files=False)
 
     if uploaded_file:
+        st.write('uploading new file!')
         thumbnail_stream = None
         if uploaded_file.type.startswith('image/'):
             thumbnail_stream = create_thumbnail(uploaded_file, uploaded_file.type.split('/')[-1])
@@ -308,7 +309,6 @@ if st.session_state.logged_in:
                 blob_path = file['blob']
                 parts = blob_path.split(',')
                 blob_path = parts[1].strip()
-                st.write(blob_path)
 
                 blob = bucket.blob(blob_path)
                 pdf_bytes = blob.download_as_bytes()
