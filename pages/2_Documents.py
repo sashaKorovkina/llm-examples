@@ -272,9 +272,11 @@ if st.session_state.logged_in:
         display_file_with_thumbnail(file)
 
     files = get_existing_files()
+
     if files:
         st.write(f'All files are:')
-        display_file_with_thumbnail(file)
+        for file in files:
+            display_file_with_thumbnail(file)
         # for file in files:
         #     display_file_with_thumbnail(file)
         #     file_extension = file['filename'].split(".")[-1].lower()
