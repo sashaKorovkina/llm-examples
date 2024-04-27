@@ -279,6 +279,9 @@ if st.session_state.logged_in:
     api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
     username = st.session_state.username
 
+    if 'upload_key' not in st.session_state:
+        st.session_state.upload_key = 0  # Unique key for the uploader widget
+
     uploaded_file = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
                                      accept_multiple_files=False, key=st.session_state.upload_key)
 
