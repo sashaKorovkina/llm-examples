@@ -206,8 +206,8 @@ def pdf_parse_content(file):
     st.write('trying to parse...')
     bucket = storage.bucket()
     blob = bucket.blob(file)
-    pdf_bytes = blob.download_as_bytes()
-    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    # pdf_bytes = blob.download_as_bytes()
+    # doc = fitz.open(stream=pdf_bytes, filetype="pdf")
 
     #     pdf_bytes = uploaded_file.getvalue()
     # st.write('trying to parse...')
