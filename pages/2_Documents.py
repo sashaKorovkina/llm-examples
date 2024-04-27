@@ -203,7 +203,10 @@ def pdf_page_to_image(pdf_stream):
     return img_bytes
 
 def pdf_parse_content(file):
-    st.write('trying to parse...')
+    if st.button("Chat to AI", key=f"chat_{uploaded_file.name}"):
+        st.write('trying to parse...')
+    #     pdf_bytes = uploaded_file.getvalue()
+    # st.write('trying to parse...')
     pass
 def upload_file(uploaded_file, thumbnail_stream):
     blob = bucket.blob(f"{username}/{uuid.uuid4()}_{uploaded_file.name}")
