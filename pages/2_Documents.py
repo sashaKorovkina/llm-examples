@@ -309,7 +309,7 @@ if st.session_state.logged_in:
             elif file_extension == "pdf":
                 st.write('I am a pdf')
 
-                blob_obj, blob_path = file['blob']
+                blob_path = file['blob']
                 st.write(blob_path)
                 bucket_name = 'elmeto-12de0.appspot.com'
                 blob = bucket.blob(blob_path)
