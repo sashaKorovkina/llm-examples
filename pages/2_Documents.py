@@ -110,9 +110,22 @@ def chat_to_ai(file_name):
     # Functionality to chat about the specific PDF
     st.write(f"Chatting about {file_name}...")
 
-def get_summary(file_name):
+def get_summary(pdf_bytes, file_name):
     # Functionality to summarize the specific PDF
     st.write(f"Getting summary for {file_name}...")
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    pdf_images = []
+    pdf_texts = []  # List to store text from all pages
+
+    for page_index in range(len(doc)):
+        page = doc[page_index]
+        pix = page.get_pixmap()
+        image_data = pix.tobytes()
+        pdf_image = Image.open(io.BytesIO(image_data))
+        pdf_images.append(pdf_image)
+
+        text = pytesseract.image_to_string(pdf_image)
+        pdf_texts.append(text)
 
 def nav_page(page_name, timeout_secs=3):
     nav_script = """
@@ -139,13 +152,11 @@ def nav_page(page_name, timeout_secs=3):
     """ % (page_name, timeout_secs)
     html(nav_script)
 
-
 def get_existing_files():
     docs_ref = db.collection('users').document(username).collection('documents')
     docs = docs_ref.get()
     files = [doc.to_dict() for doc in docs]
     return files
-
 
 def get_last_file():
     docs_ref = db.collection('users').document(username).collection('documents')
@@ -309,6 +320,7 @@ if st.session_state.logged_in:
                 if st.button("Chat to AI", key=f"chat_{file['url']}"):
                     pdf_parse_content(pdf_bytes)
                 if st.button("Get Summary", key=f"chat_summary_{file['url']}"):
+                    get_summary(pdf_bytes, file['filename'])
                     st.write('getting summary...')
                     #pdf_parse_content(pdf_bytes)
         # st.write("The existing files are:")
