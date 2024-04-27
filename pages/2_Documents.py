@@ -274,14 +274,15 @@ if st.session_state.logged_in:
     files = get_existing_files()
     if files:
         st.write(f'All files are:')
-        for file in files:
-            display_file_with_thumbnail(file)
-            file_extension = file['filename'].split(".")[-1].lower()
-            if file_extension in ["jpg", "jpeg", "png"]:
-                st.write('I am an image')
-            elif file_extension == "pdf":
-                st.write('I am a pdf')
-                pdf_parse_content(file)
+        display_file_with_thumbnail(file)
+        # for file in files:
+        #     display_file_with_thumbnail(file)
+        #     file_extension = file['filename'].split(".")[-1].lower()
+        #     if file_extension in ["jpg", "jpeg", "png"]:
+        #         st.write('I am an image')
+        #     elif file_extension == "pdf":
+        #         st.write('I am a pdf')
+        #         pdf_parse_content(file)
         # st.write("The existing files are:")
         # display_file_with_thumbnail(file)
         # selected_files = []  # List to store selected files
