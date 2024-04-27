@@ -120,14 +120,14 @@ def get_summary(pdf_bytes, file_name):
         page = doc[page_index]
         pix = page.get_pixmap()
         image_data = pix.tobytes()
-        pdf_image = Image.open(io.BytesIO(image_data))
-        pdf_images.append(pdf_image)
-
-        text = pytesseract.image_to_string(pdf_image)
-        pdf_texts.append(text)
-
-    st.write(pdf_texts)
-    send_text_to_openai(pdf_texts)
+    #     pdf_image = Image.open(io.BytesIO(image_data))
+    #     pdf_images.append(pdf_image)
+    #
+    #     text = pytesseract.image_to_string(pdf_image)
+    #     pdf_texts.append(text)
+    #
+    # st.write(pdf_texts)
+    # send_text_to_openai(pdf_texts)
 
 
 def nav_page(page_name, timeout_secs=3):
@@ -317,6 +317,6 @@ if st.session_state.logged_in:
                     pdf_parse_content(pdf_bytes)
                 if st.button("Get Summary", key=f"chat_summary_{file['url']}"):
                     st.write('getting sum')
-                    # get_summary(pdf_bytes, file['filename'])
+                    get_summary(pdf_bytes, file['filename'])
 else:
     st.write('Register please.')
