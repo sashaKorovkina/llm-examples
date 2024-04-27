@@ -203,7 +203,6 @@ def pdf_page_to_image(pdf_stream):
     return img_bytes
 
 def pdf_parse_content(pdf_bytes):
-    st.write('trying to parse...')
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
     pdf_images = []
     pdf_texts = []  # List to store text from all pages
@@ -224,7 +223,6 @@ def pdf_parse_content(pdf_bytes):
     st.session_state['chat_file_name'] = file['filename']
 
     nav_page("chat_to_ai")
-    st.write('done.')
     pass
 def upload_file(uploaded_file, thumbnail_stream):
     blob = bucket.blob(f"{username}/{uuid.uuid4()}_{uploaded_file.name}")
@@ -310,7 +308,9 @@ if st.session_state.logged_in:
                 pdf_bytes = blob.download_as_bytes()
                 if st.button("Chat to AI", key=f"chat_{file['url']}"):
                     pdf_parse_content(pdf_bytes)
-
+                if st.button("Get Summary", key=f"chat_summary_{file['url']}"):
+                    st.write('getting summary...')
+                    #pdf_parse_content(pdf_bytes)
         # st.write("The existing files are:")
         # display_file_with_thumbnail(file)
         # selected_files = []  # List to store selected files
