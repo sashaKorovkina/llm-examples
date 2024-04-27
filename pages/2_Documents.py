@@ -290,8 +290,6 @@ if st.session_state.logged_in:
                     raise ValueError("URL must start with gs://")
 
                     # Initialize the Google Cloud Storage client
-                storage_client = storage.Client()
-                bucket = storage_client.bucket(bucket_name)
                 blob = bucket.blob(blob_path)
 
                 # Download the file as bytes
