@@ -203,7 +203,7 @@ def pdf_page_to_image(pdf_stream):
     return img_bytes
 
 def pdf_parse_content(file):
-    if st.button("Chat to AI", key=f"chat_{file['url']}"):
+    if st.button("Chat to AI", key=f"chat_{file}"):
         st.write('trying to parse...')
         bucket = storage.bucket()
         blob = bucket.blob(file)
