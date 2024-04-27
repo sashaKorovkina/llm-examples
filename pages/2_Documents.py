@@ -258,6 +258,7 @@ def upload_file(uploaded_file, thumbnail_stream):
         'filename': uploaded_file.name,
         'content_type': uploaded_file.type,
         'url': url,
+        'blob': blob,
         'thumbnail_url': thumb_url,
         'uploaded_at': firestore.SERVER_TIMESTAMP
     })
@@ -309,7 +310,6 @@ if st.session_state.logged_in:
                 st.write('I am a pdf')
 
                 file_path = r'gs://elmeto-12de0.appspot.com/nYta7NVFjsZ1yKmm0W7JCSQZfF33/94052005-9e90-43ab-9462-0ee2fa94c51b_Completion of Studies.docx.pdf'
-                st.write(file_path)
                 if file_path.startswith('gs://'):
                     _, path = file_path.split('gs://', 1)
                     bucket_name, blob_path = path.split('/', 1)
@@ -318,6 +318,7 @@ if st.session_state.logged_in:
                 else:
                     raise ValueError("URL must start with gs://")
 
+                bucket_name = 'elmeto-12de0.appspot.com'
                 blob = bucket.blob(blob_path)
                 pdf_bytes = blob.download_as_bytes()
 
