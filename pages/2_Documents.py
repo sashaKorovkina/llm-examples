@@ -284,7 +284,6 @@ if st.session_state.logged_in:
 
     uploaded_file = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
                                      accept_multiple_files=False, key=st.session_state.upload_key)
-    st.session_state.upload_key += 1
 
     if uploaded_file:
         st.write('uploading new file!')
@@ -295,8 +294,6 @@ if st.session_state.logged_in:
             thumbnail_stream = pdf_page_to_image(uploaded_file.getvalue())
 
         upload_file(uploaded_file, thumbnail_stream)
-        uploaded_file = None
-        st.session_state.clear_file = True
 
         if thumbnail_stream is not None:
             with contextlib.closing(thumbnail_stream):
