@@ -35,8 +35,7 @@ bucket = storage.bucket('elmeto-12de0.appspot.com')
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 
-# with st.sidebar:
-#     api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
+api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
 
 def encode_image(image_path):
   with open(image_path, "rb") as image_file:
@@ -314,7 +313,6 @@ if st.session_state.logged_in:
                 blob_path = parts[1].strip()
                 st.write(blob_path)
 
-                bucket_name = 'elmeto-12de0.appspot.com'
                 blob = bucket.blob(blob_path)
                 pdf_bytes = blob.download_as_bytes()
 
