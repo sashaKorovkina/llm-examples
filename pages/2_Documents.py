@@ -283,7 +283,19 @@ if st.session_state.logged_in:
             elif file_extension == "pdf":
                 st.write('I am a pdf')
                 file_path = r'gs://elmeto-12de0.appspot.com/nYta7NVFjsZ1yKmm0W7JCSQZfF33/94052005-9e90-43ab-9462-0ee2fa94c51b_Completion of Studies.docx.pdf'
-                pdf_parse_content(file_path)
+                if file_path.startswith('gs://'):
+                    _, path = file_path.split('gs://', 1)
+                    bucket_name, blob_path = path.split('/', 1)
+                else:
+                    raise ValueError("URL must start with gs://")
+
+                    # Initialize the Google Cloud Storage client
+                storage_client = storage.Client()
+                bucket = storage_client.bucket(bucket_name)
+                blob = bucket.blob(blob_path)
+
+                # Download the file as bytes
+                pdf_bytes = blob.download_as_bytes()
 
         # st.write("The existing files are:")
         # display_file_with_thumbnail(file)
