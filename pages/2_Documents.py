@@ -125,8 +125,8 @@ def get_summary(pdf_bytes, file_name):
 
         text = pytesseract.image_to_string(pdf_image)
         pdf_texts.append(text)
-    #
-    # st.write(pdf_texts)
+
+    st.write(pdf_texts)
     # send_text_to_openai(pdf_texts)
 
 
