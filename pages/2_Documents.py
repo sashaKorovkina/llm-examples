@@ -202,7 +202,9 @@ def pdf_page_to_image(pdf_stream):
     doc.close()
     return img_bytes
 
-
+def pdf_parse_content(file):
+    st.write('trying to parse...')
+    pass
 def upload_file(uploaded_file, thumbnail_stream):
     blob = bucket.blob(f"{username}/{uuid.uuid4()}_{uploaded_file.name}")
     blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
@@ -272,6 +274,7 @@ if st.session_state.logged_in:
                 st.write('I am an image')
             elif file_extension == "pdf":
                 st.write('I am a pdf')
+                pdf_parse_content(file)
         # st.write("The existing files are:")
         # display_file_with_thumbnail(file)
         # selected_files = []  # List to store selected files
