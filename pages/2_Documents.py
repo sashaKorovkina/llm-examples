@@ -305,6 +305,7 @@ if st.session_state.logged_in:
     files = get_existing_files()
 
     if files:
+        st.rerun
         st.write(f'All files are:')
         for file in files:
             display_file_with_thumbnail(file)
@@ -320,8 +321,6 @@ if st.session_state.logged_in:
 
                 blob = bucket.blob(blob_path)
                 pdf_bytes = blob.download_as_bytes()
-
-                st.experimental_rerun()
 
                 if st.button("Chat to AI", key=f"chat_{file['url']}"):
                     pdf_parse_content(pdf_bytes)
