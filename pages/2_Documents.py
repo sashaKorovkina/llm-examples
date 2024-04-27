@@ -300,6 +300,7 @@ if st.session_state.logged_in:
         st.write(f'Current document is:')
         file = get_last_file()
         display_file_with_thumbnail(file)
+        st.experimental_rerun()
 
     files = get_existing_files()
 
