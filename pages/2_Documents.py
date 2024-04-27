@@ -216,7 +216,13 @@ def pdf_parse_content(pdf_bytes):
         pdf_images.append(pdf_image)
 
         text = pytesseract.image_to_string(pdf_image)
-        pdf_texts.append(text)  # Accumulate text from each page
+        pdf_texts.append(text)
+
+    st.session_state['pdf_images'] = pdf_images
+    st.session_state['pdf_texts'] = pdf_texts
+    st.session_state['file_name'] = uploaded_file.name
+    st.session_state['chat_file_name'] = uploaded_file.name
+    nav_page("chat_to_ai")
     st.write('done.')
     pass
 def upload_file(uploaded_file, thumbnail_stream):
