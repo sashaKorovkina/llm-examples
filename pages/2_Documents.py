@@ -205,8 +205,8 @@ def pdf_page_to_image(pdf_stream):
 def pdf_parse_content(file):
     if st.button("Chat to AI", key=f"chat_{file['url']}"):
         st.write('trying to parse...')
-        #blob = bucket.blob('gs://elmeto-12de0.appspot.com/nYta7NVFjsZ1yKmm0W7JCSQZfF33/8f2bba67-5528-41c6-9303-c8db9f4ec562_Alexandra Korovkina - Developer CV.pdf')  # The URL here should be the path to your file in Firebase Storage
-        #pdf_bytes = blob.download_as_bytes()
+        blob = bucket.blob('https://storage.googleapis.com/elmeto-12de0.appspot.com/nYta7NVFjsZ1yKmm0W7JCSQZfF33/94052005-9e90-43ab-9462-0ee2fa94c51b_Completion%20of%20Studies.docx.pdf?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=firebase-adminsdk-cyn5x%40elmeto-12de0.iam.gserviceaccount.com%2F20240427%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20240427T082036Z&X-Goog-Expires=600000&X-Goog-SignedHeaders=host&X-Goog-Signature=b50015d1bbc257cae7acbf9f6810afc9dec1c5951b23d46ccc39ae5e72bedca9d5c0c1a9dc18072981c681492dc96bfa6ddba5c363a67356d76998e29c56b7e9f37ba79b68318808adce5b4c49a629f5ba4a12dc49c5b846fe64a9dc67130677b289b9df35d963b78f57c6b539800f13cb070529089dad3bbfec042e432d8829bb70a88e2d8eb20b85571399cec2bb7965ff8c27cf033bfbb15537c61747265932018639f67b00d3e3db435c128f193843e3c25f539f7bf27463e6d1106c2f6cef49465b4e66051d1e6b2614f9af86cfc8d6231071ca913ff3808d217119df41db029d1c36747064d67a2327aab6091ae3cc2cd44c77c04416157a35af909b08')  # The URL here should be the path to your file in Firebase Storage
+        pdf_bytes = blob.download_as_bytes()
         st.write('success')
 
     #     pdf_bytes = uploaded_file.getvalue()
@@ -283,7 +283,6 @@ if st.session_state.logged_in:
             elif file_extension == "pdf":
                 st.write('I am a pdf')
                 pdf_parse_content(file)
-                thumbnail_stream = pdf_page_to_image(file.getvalue())
         # st.write("The existing files are:")
         # display_file_with_thumbnail(file)
         # selected_files = []  # List to store selected files
