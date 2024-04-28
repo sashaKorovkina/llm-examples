@@ -273,6 +273,23 @@ def display_file_with_thumbnail(file):
     else:
         st.markdown(f"[{file['filename']}]({file['url']})")
 
+def upload_single_file(uploaded_file):
+    st.write('uploading new file!')
+    thumbnail_stream = None
+    if uploaded_file.type.startswith('image/'):
+        thumbnail_stream = create_thumbnail(uploaded_file, uploaded_file.type.split('/')[-1])
+    elif uploaded_file.type.startswith('application/pdf'):
+        thumbnail_stream = pdf_page_to_image(uploaded_file.getvalue())
+
+    upload_file(uploaded_file, thumbnail_stream)
+
+    if thumbnail_stream is not None:
+        with contextlib.closing(thumbnail_stream):
+            pass
+    st.write(f'Current document is:')
+    file = get_last_file()
+    display_file_with_thumbnail(file)
+
 st.title("Documents")
 
 if st.session_state.logged_in:
@@ -286,21 +303,7 @@ if st.session_state.logged_in:
                                      accept_multiple_files=False, key=st.session_state.upload_key)
 
     if uploaded_file:
-        st.write('uploading new file!')
-        thumbnail_stream = None
-        if uploaded_file.type.startswith('image/'):
-            thumbnail_stream = create_thumbnail(uploaded_file, uploaded_file.type.split('/')[-1])
-        elif uploaded_file.type.startswith('application/pdf'):
-            thumbnail_stream = pdf_page_to_image(uploaded_file.getvalue())
-
-        upload_file(uploaded_file, thumbnail_stream)
-
-        if thumbnail_stream is not None:
-            with contextlib.closing(thumbnail_stream):
-                pass
-        st.write(f'Current document is:')
-        file = get_last_file()
-        display_file_with_thumbnail(file)
+        upload_single_file(uploaded_file)
 
     files = get_existing_files()
 
