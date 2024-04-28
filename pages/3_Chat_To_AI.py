@@ -22,7 +22,7 @@ if st.session_state.logged_in:
         pdf_texts = st.session_state['pdf_texts']
         file_name = st.session_state['file_name']
         with st.sidebar:
-            text = st.text_input(chat_file_name)
+            text = st.text(chat_file_name)
         st.write("Starting chat session FOR:", chat_file_name)
         if pdf_texts:
             accumulated_text = '\n'.join(pdf_texts)
