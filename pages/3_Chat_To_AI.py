@@ -18,7 +18,7 @@ if st.session_state.logged_in:
     #if api_key:
     if 'chat_file_name' in st.session_state:
         with st.sidebar:
-            api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
+            text = st.text_input("OpenAI API Key")
         chat_file_name = st.session_state['chat_file_name']
         pdf_images = st.session_state['pdf_images']
         pdf_texts = st.session_state['pdf_texts']
