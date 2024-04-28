@@ -317,8 +317,8 @@ if st.session_state.logged_in:
         if uploaded_file and uploaded_file.name not in existing_file_names:
             file = upload_single_file(uploaded_file)
             display_file_with_thumbnail(file)
-            st.experimental_rerun()
             uploaded_file = None  # Clear the uploaded file after handling
+        st.experimental_rerun()
 
     if files:
         st.write(f'All files are:')
