@@ -293,16 +293,15 @@ def upload_single_file(uploaded_file):
 
     if uploaded_file.name not in get_existing_file_names():
         st.write(uploaded_file.name)
+        upload_file(uploaded_file, thumbnail_stream)
+        if thumbnail_stream is not None:
+            with contextlib.closing(thumbnail_stream):
+                pass
 
-    upload_file(uploaded_file, thumbnail_stream)
-
-    if thumbnail_stream is not None:
-        with contextlib.closing(thumbnail_stream):
-            pass
-
-    st.write(f'Current document is:')
-    file = get_last_file()
-    return file
+        st.write(f'Current document is:')
+        file = get_last_file()
+        return file
+    elif st.write
 
 
 st.title("Documents")
@@ -314,8 +313,11 @@ if st.session_state.logged_in:
     if 'upload_key' not in st.session_state:
         st.session_state.upload_key = 0  # Unique key for the uploader widget
 
-    uploaded_file = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
-                                     accept_multiple_files=False, key=st.session_state.upload_key)
+    with st.form("my-form", clear_on_submit=True):
+        uploaded_file = st.file_uploader("FILE UPLOADER")
+        submitted = st.form_submit_button("UPLOAD!")
+    # uploaded_file = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
+    #                                  accept_multiple_files=False, key=st.session_state.upload_key)
     if uploaded_file:
         file = upload_single_file(uploaded_file)
         display_file_with_thumbnail(file)
