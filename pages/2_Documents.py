@@ -339,6 +339,7 @@ if st.session_state.logged_in:
                     pdf_parse_content(pdf_bytes)
                 if st.button("Get Summary", key=f"chat_summary_{file['url']}"):
                     st.write('getting sum')
+                    file.seek(0)
                     #get_summary(pdf_bytes, file['filename'])
 else:
     st.write('Register please.')
