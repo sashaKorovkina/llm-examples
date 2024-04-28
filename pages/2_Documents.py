@@ -254,9 +254,13 @@ def pdf_parse_content(pdf_bytes):
     st.session_state['chat_file_name'] = file['filename']
 
     #adding chat to db
+    doc_ref = db.collection('users').document(username).collection('chats').document()
+    doc_ref.set({
+        'filename': uploaded_file.name
+    })
 
     nav_page("chat_to_ai")
-    pass
+
 def upload_file(uploaded_file, thumbnail_stream):
     blob = bucket.blob(f"{username}/{uuid.uuid4()}_{uploaded_file.name}")
     blob.upload_from_string(uploaded_file.getvalue(), content_type=uploaded_file.type)
