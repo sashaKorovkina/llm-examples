@@ -209,6 +209,7 @@ def display_file_with_thumbnail(file):
     else:
         st.markdown(f"[{file['filename']}]({file['url']})")
 
+
 def parse_text():
     st.write('parsing...')
 
@@ -315,7 +316,6 @@ if st.session_state.logged_in:
 
         if uploaded_file and uploaded_file.name not in existing_file_names:
             file = upload_single_file(uploaded_file)
-            display_file_with_thumbnail(file)
             uploaded_file = None  # Clear the uploaded file after handling
             st.experimental_rerun()
 
