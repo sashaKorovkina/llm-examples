@@ -47,7 +47,7 @@ def save_uploaded_file(uploaded_file, target_path):
     with open(target_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
 
-def send_image_to_openai(base64_image):
+def send_image_to_openai(base64_image, key):
     headers = {
       "Content-Type": "application/json",
       "Authorization": f"Bearer {api_key}"
@@ -74,7 +74,7 @@ def send_image_to_openai(base64_image):
               ],
               "max_tokens": 100
             }
-    if st.button("Get Explanation"):
+    if st.button("Get Explanation", key = key):
         try:
             response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
             print(response.json())
@@ -335,7 +335,7 @@ if st.session_state.logged_in:
 
                 blob = bucket.blob(blob_path)
                 image_bytes = blob.download_as_bytes()
-                send_image_to_openai(image_bytes)
+                send_image_to_openai(image_bytes, key=f"chat_{file['url']}")
             elif file_extension == "pdf":
                 blob_path = file['blob']
                 parts = blob_path.split(',')
