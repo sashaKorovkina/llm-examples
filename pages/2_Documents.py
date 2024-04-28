@@ -111,7 +111,6 @@ def chat_to_ai(file_name):
     st.write(f"Chatting about {file_name}...")
 
 def get_summary(pdf_bytes, file_name):
-    # Functionality to summarize the specific PDF
     st.write(f"Getting summary for {file_name}...")
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
     pdf_images = []
@@ -128,7 +127,7 @@ def get_summary(pdf_bytes, file_name):
         pdf_texts.append(text)
 
     st.write(pdf_texts)
-    ##send_text_to_openai(pdf_texts)
+    send_text_to_openai(pdf_texts)
 
 
 def nav_page(page_name, timeout_secs=3):
@@ -338,7 +337,6 @@ if st.session_state.logged_in:
                 if st.button("Chat to AI", key=f"chat_{file['url']}"):
                     pdf_parse_content(pdf_bytes)
                 if st.button("Get Summary", key=f"chat_summary_{file['url']}"):
-                    st.write('getting sum')
                     get_summary(pdf_bytes, file['filename'])
 else:
     st.write('Register please.')
