@@ -290,6 +290,7 @@ if st.session_state.logged_in:
     if uploaded_file:
         st.write('uploading new file!')
         thumbnail_stream = None
+        filename = st.write(uploaded_file.name)
         if uploaded_file.type.startswith('image/'):
             thumbnail_stream = create_thumbnail(uploaded_file, uploaded_file.type.split('/')[-1])
         elif uploaded_file.type.startswith('application/pdf'):
