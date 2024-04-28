@@ -291,18 +291,14 @@ def upload_single_file(uploaded_file):
     elif uploaded_file.type.startswith('application/pdf'):
         thumbnail_stream = pdf_page_to_image(uploaded_file.getvalue())
 
-    if uploaded_file.name not in get_existing_file_names():
-        st.write(uploaded_file.name)
-        upload_file(uploaded_file, thumbnail_stream)
-        if thumbnail_stream is not None:
-            with contextlib.closing(thumbnail_stream):
-                pass
+    upload_file(uploaded_file, thumbnail_stream)
+    if thumbnail_stream is not None:
+        with contextlib.closing(thumbnail_stream):
+            pass
 
-        st.write(f'Current document is:')
-        file = get_last_file()
-        return file
-    elif st.write:
-        'Change file name please.'
+    st.write(f'Current document is:')
+    file = get_last_file()
+    return file
 
 
 st.title("Documents")
