@@ -1,4 +1,6 @@
 import streamlit as st
+from firebase_admin import firestore, storage
+
 from langchain.vectorstores import ElasticVectorSearch, Pinecone, Weaviate, FAISS
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTextSplitter
@@ -7,6 +9,8 @@ from langchain.llms import OpenAI
 
 # with st.sidebar:
 #     api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
+
+db = firestore.client()
 
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
@@ -25,6 +29,12 @@ if st.session_state.logged_in:
         pdf_images = st.session_state['pdf_images']
         pdf_texts = st.session_state['pdf_texts']
         file_name = st.session_state['file_name']
+        username = st.session_state['username']
+
+        doc_ref = db.collection('users').document(username).collection('chats').document()
+        doc_ref.set({
+            'filename': file_name
+        })
 
         # Add the chat file name to the sidebar if it's not already there
         if chat_file_name not in st.session_state.sidebar_chats:

@@ -247,6 +247,7 @@ def pdf_parse_content(pdf_bytes):
         text = pytesseract.image_to_string(pdf_image)
         pdf_texts.append(text)
 
+    st.session_state['username'] = username
     st.session_state['pdf_images'] = pdf_images
     st.session_state['pdf_texts'] = pdf_texts
     st.session_state['file_name'] = file['filename']
