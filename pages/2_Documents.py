@@ -253,6 +253,8 @@ def pdf_parse_content(pdf_bytes):
     st.session_state['file_name'] = file['filename']
     st.session_state['chat_file_name'] = file['filename']
 
+    #adding chat to db
+
     nav_page("chat_to_ai")
     pass
 def upload_file(uploaded_file, thumbnail_stream):
