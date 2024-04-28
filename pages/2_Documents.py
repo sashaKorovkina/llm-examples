@@ -11,7 +11,6 @@ import uuid
 import datetime
 import fitz
 import contextlib
-from random import randint
 
 # CHANGE FOR CLOUD DEPLOY!!!!
 pytesseract.pytesseract.tesseract_cmd = None
@@ -305,16 +304,13 @@ def upload_single_file(uploaded_file):
 st.title("Documents")
 
 if st.session_state.logged_in:
-    state = get_session_state()
-    if not state.widget_key:
-        state.widget_key = str(randint(1000, 100000000))
     api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
     username = st.session_state.username
 
     if 'upload_key' not in st.session_state:
         st.session_state.upload_key = 0  # Unique key for the uploader widget
 
-    with st.form("my-form", clear_on_submit=True, key=state.widget_key):
+    with st.form("my-form", clear_on_submit=True):
         uploaded_file = st.file_uploader("FILE UPLOADER")
         submitted = st.form_submit_button("UPLOAD!")
 
@@ -342,7 +338,6 @@ if st.session_state.logged_in:
                 if st.button("Chat to AI", key=f"chat_{file['url']}"):
                     pdf_parse_content(pdf_bytes)
                 if st.button("Get Summary", key=f"chat_summary_{file['url']}"):
-                    state.widget_key = str(randint(1000, 100000000))
                     st.write('getting sum')
                     #get_summary(pdf_bytes, file['filename'])
 else:
