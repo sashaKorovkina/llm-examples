@@ -296,7 +296,7 @@ def upload_single_file(uploaded_file):
         with contextlib.closing(thumbnail_stream):
             pass
 
-    st.write(f'Current document is:')
+    # st.write(f'Current document is:')
     file = get_last_file()
     return file
 
