@@ -15,41 +15,63 @@ st.title("Chat To AI")
 
 if st.session_state.logged_in:
     api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
-    #if api_key:
+
+    # Initialize the sidebar list if it doesn't exist
+    if 'sidebar_chats' not in st.session_state:
+        st.session_state.sidebar_chats = []
+
     if 'chat_file_name' in st.session_state:
         chat_file_name = st.session_state['chat_file_name']
         pdf_images = st.session_state['pdf_images']
         pdf_texts = st.session_state['pdf_texts']
         file_name = st.session_state['file_name']
-        with st.sidebar:
-            text = st.text(chat_file_name)
+
+        # Add the chat file name to the sidebar if it's not already there
+        if chat_file_name not in st.session_state.sidebar_chats:
+            with st.sidebar:
+                st.text(chat_file_name)
+            # Add the chat file name to the list to avoid future duplicates
+            st.session_state.sidebar_chats.append(chat_file_name)
+
         st.write("Starting chat session FOR:", chat_file_name)
-        if pdf_texts:
-            accumulated_text = '\n'.join(pdf_texts)
-            st.write(accumulated_text)
-        else:
-            st.write("No text was extracted from the PDF, or the list is empty.")
 
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=512,
-            chunk_overlap=32,
-            length_function=len,
-        )
-
-        texts = text_splitter.split_text(accumulated_text)
-
-        embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-        docsearch = FAISS.from_texts(texts, embeddings)
-        chain = load_qa_chain(OpenAI(openai_api_key=api_key), chain_type="stuff")
-
-        query = st.text_input("Enter your query:")
-
-        if query:
-            docs = docsearch.similarity_search(query)
-            result = chain.run(input_documents=docs, question=query)
-
-            # Display the result
-            st.write("Result:")
-            st.write(result)
-else:
-    st.write('Please register or login to continue.')
+# if st.session_state.logged_in:
+#     api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
+#     #if api_key:
+#     if 'chat_file_name' in st.session_state:
+#         chat_file_name = st.session_state['chat_file_name']
+#         pdf_images = st.session_state['pdf_images']
+#         pdf_texts = st.session_state['pdf_texts']
+#         file_name = st.session_state['file_name']
+#         with st.sidebar:
+#             text = st.text(chat_file_name)
+#         st.write("Starting chat session FOR:", chat_file_name)
+#         if pdf_texts:
+#             accumulated_text = '\n'.join(pdf_texts)
+#             st.write(accumulated_text)
+#         else:
+#             st.write("No text was extracted from the PDF, or the list is empty.")
+#
+#         text_splitter = RecursiveCharacterTextSplitter(
+#             chunk_size=512,
+#             chunk_overlap=32,
+#             length_function=len,
+#         )
+#
+#         texts = text_splitter.split_text(accumulated_text)
+#
+#         embeddings = OpenAIEmbeddings(openai_api_key=api_key)
+#         docsearch = FAISS.from_texts(texts, embeddings)
+#         chain = load_qa_chain(OpenAI(openai_api_key=api_key), chain_type="stuff")
+#
+#         query = st.text_input("Enter your query:")
+#
+#         if query:
+#             docs = docsearch.similarity_search(query)
+#             result = chain.run(input_documents=docs, question=query)
+#
+#             # Display the result
+#             st.write("Result:")
+#             st.write(result)
+# else:
+#     st.write('Please register or login to continue.')
