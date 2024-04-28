@@ -291,7 +291,7 @@ def upload_single_file(uploaded_file):
     elif uploaded_file.type.startswith('application/pdf'):
         thumbnail_stream = pdf_page_to_image(uploaded_file.getvalue())
 
-    if uploaded_file.name in get_existing_file_names():
+    if uploaded_file.name not in get_existing_file_names():
         st.write(uploaded_file.name)
 
     upload_file(uploaded_file, thumbnail_stream)
