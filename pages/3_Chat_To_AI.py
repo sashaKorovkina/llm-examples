@@ -24,6 +24,7 @@ if st.session_state.logged_in:
             st.write("Starting chat session FOR:", chat_file_name)
             if pdf_texts:
                 accumulated_text = '\n'.join(pdf_texts)
+                st.write(accumulated_text)
             else:
                 st.write("No text was extracted from the PDF, or the list is empty.")
 
