@@ -11,6 +11,7 @@ import uuid
 import datetime
 import fitz
 import contextlib
+import base64
 
 # CHANGE FOR CLOUD DEPLOY!!!!
 pytesseract.pytesseract.tesseract_cmd = None
@@ -47,8 +48,9 @@ def save_uploaded_file(uploaded_file, target_path):
     with open(target_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
 
-def send_image_to_openai(base64_image, api_key, key):
+def send_image_to_openai(image_bytes, api_key, key):
     st.write(api_key)
+    base64_image = base64.b64encode(image_bytes).decode('utf-8')
     headers = {
       "Content-Type": "application/json",
       "Authorization": f"Bearer {api_key}"
