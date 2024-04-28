@@ -155,11 +155,13 @@ def nav_page(page_name, timeout_secs=3):
     """ % (page_name, timeout_secs)
     html(nav_script)
 
+
 def get_existing_files():
     docs_ref = db.collection('users').document(username).collection('documents')
     docs = docs_ref.get()
     files = [doc.to_dict() for doc in docs]
     return files
+
 
 def get_existing_file_names():
     names = []
@@ -170,6 +172,7 @@ def get_existing_file_names():
         filename = file['filename']
         names.append(filename)
     return names
+
 
 def get_last_file():
     docs_ref = db.collection('users').document(username).collection('documents')
@@ -326,6 +329,15 @@ if st.session_state.logged_in:
             file_extension = file['filename'].split(".")[-1].lower()
             if file_extension in ["jpg", "jpeg", "png"]:
                 st.write('I am an image')
+                blob_path = file['blob']
+                parts = blob_path.split(',')
+                blob_path = parts[1].strip()
+
+                blob = bucket.blob(blob_path)
+                image_bytes = blob.download_as_bytes()
+
+                if st.button("Chat to AI", key=f"chat_{file['url']}"):
+                    send_image_to_openai(image_bytes)
             elif file_extension == "pdf":
                 blob_path = file['blob']
                 parts = blob_path.split(',')
