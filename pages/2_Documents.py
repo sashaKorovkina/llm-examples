@@ -314,6 +314,7 @@ if st.session_state.logged_in:
         if uploaded_file:
             file = upload_single_file(uploaded_file)
             display_file_with_thumbnail(file)
+        uploaded_file = None
 
     files = get_existing_files()
 
