@@ -318,7 +318,7 @@ if st.session_state.logged_in:
             file = upload_single_file(uploaded_file)
             display_file_with_thumbnail(file)
             uploaded_file = None  # Clear the uploaded file after handling
-        st.experimental_rerun()
+            st.experimental_rerun()
 
     if files:
         st.write(f'All files are:')
