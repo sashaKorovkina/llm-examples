@@ -301,7 +301,8 @@ def upload_single_file(uploaded_file):
         st.write(f'Current document is:')
         file = get_last_file()
         return file
-    elif st.write
+    elif st.write:
+        'Change file name please.'
 
 
 st.title("Documents")
