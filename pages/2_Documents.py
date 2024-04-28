@@ -311,9 +311,9 @@ if st.session_state.logged_in:
         uploaded_file = st.file_uploader("FILE UPLOADER")
         submitted = st.form_submit_button("UPLOAD!")
 
-    if uploaded_file:
-        file = upload_single_file(uploaded_file)
-        display_file_with_thumbnail(file)
+        if uploaded_file:
+            file = upload_single_file(uploaded_file)
+            display_file_with_thumbnail(file)
 
     files = get_existing_files()
 
