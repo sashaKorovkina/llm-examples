@@ -17,12 +17,12 @@ if st.session_state.logged_in:
     api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
     #if api_key:
     if 'chat_file_name' in st.session_state:
-        with st.sidebar:
-            text = st.text_input("OpenAI API Key")
         chat_file_name = st.session_state['chat_file_name']
         pdf_images = st.session_state['pdf_images']
         pdf_texts = st.session_state['pdf_texts']
         file_name = st.session_state['file_name']
+        with st.sidebar:
+            text = st.text_input(chat_file_name)
         st.write("Starting chat session FOR:", chat_file_name)
         if pdf_texts:
             accumulated_text = '\n'.join(pdf_texts)
