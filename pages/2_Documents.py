@@ -49,7 +49,6 @@ def save_uploaded_file(uploaded_file, target_path):
         f.write(uploaded_file.getbuffer())
 
 def send_image_to_openai(image_bytes, api_key, key):
-    st.write(api_key)
     base64_image = base64.b64encode(image_bytes).decode('utf-8')
     headers = {
       "Content-Type": "application/json",
@@ -331,7 +330,6 @@ if st.session_state.logged_in:
             display_file_with_thumbnail(file)
             file_extension = file['filename'].split(".")[-1].lower()
             if file_extension in ["jpg", "jpeg", "png"]:
-                st.write('I am an image')
                 blob_path = file['blob']
                 parts = blob_path.split(',')
                 blob_path = parts[1].strip()
