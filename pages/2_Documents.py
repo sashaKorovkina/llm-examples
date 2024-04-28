@@ -162,6 +162,16 @@ def get_existing_files():
     files = [doc.to_dict() for doc in docs]
     return files
 
+def get_existing_file_names():
+    names = []
+    docs_ref = db.collection('users').document(username).collection('documents')
+    docs = docs_ref.get()
+    files = [doc.to_dict() for doc in docs]
+    for file in files:
+        filename = file['filename']
+        names.append(filename)
+    return names
+
 def get_last_file():
     docs_ref = db.collection('users').document(username).collection('documents')
     query = docs_ref.order_by('uploaded_at', direction=firestore.Query.DESCENDING).limit(1)
@@ -281,7 +291,7 @@ def upload_single_file(uploaded_file):
     elif uploaded_file.type.startswith('application/pdf'):
         thumbnail_stream = pdf_page_to_image(uploaded_file.getvalue())
 
-    if uploaded_file.name in get_existing_files():
+    if uploaded_file.name in get_existing_file_names():
         st.write(uploaded_file.name)
 
     upload_file(uploaded_file, thumbnail_stream)
