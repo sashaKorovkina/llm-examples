@@ -306,7 +306,7 @@ if st.session_state.logged_in:
         if thumbnail_stream is not None:
             with contextlib.closing(thumbnail_stream):
                 pass
-        # st.write(f'Current document is:')
+        ## st.write(f'Current document is:')
         # file = get_last_file()
         # display_file_with_thumbnail(file)
 
