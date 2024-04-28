@@ -305,6 +305,13 @@ def upload_single_file(uploaded_file):
     file = get_last_file()
     return file
 
+def get_img_blob(file):
+    blob_path = file['blob']
+    parts = blob_path.split(',')
+    blob_path = parts[1].strip()
+    blob = bucket.blob(blob_path)
+    image_bytes = blob.download_as_bytes()
+    return image_bytes
 
 st.title("Documents")
 
@@ -330,21 +337,10 @@ if st.session_state.logged_in:
             display_file_with_thumbnail(file)
             file_extension = file['filename'].split(".")[-1].lower()
             if file_extension in ["jpg", "jpeg", "png"]:
-                blob_path = file['blob']
-                parts = blob_path.split(',')
-                blob_path = parts[1].strip()
-
-                blob = bucket.blob(blob_path)
-                image_bytes = blob.download_as_bytes()
+                image_bytes = get_img_blob(file)
                 send_image_to_openai(image_bytes, api_key, key=f"chat_{file['url']}")
             elif file_extension == "pdf":
-                blob_path = file['blob']
-                parts = blob_path.split(',')
-                blob_path = parts[1].strip()
-
-                blob = bucket.blob(blob_path)
-                pdf_bytes = blob.download_as_bytes()
-
+                pdf_bytes = get_img_blob(file)
                 if st.button("Chat to AI", key=f"chat_{file['url']}"):
                     pdf_parse_content(pdf_bytes)
                 if st.button("Get Summary", key=f"chat_summary_{file['url']}"):
