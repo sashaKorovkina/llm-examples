@@ -256,7 +256,7 @@ def pdf_parse_content(pdf_bytes):
     #adding chat to db
     doc_ref = db.collection('users').document(username).collection('chats').document()
     doc_ref.set({
-        'filename': uploaded_file.name
+        'filename': file['filename']
     })
 
     nav_page("chat_to_ai")
