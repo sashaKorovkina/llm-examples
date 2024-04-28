@@ -317,8 +317,7 @@ if st.session_state.logged_in:
     with st.form("my-form", clear_on_submit=True):
         uploaded_file = st.file_uploader("FILE UPLOADER")
         submitted = st.form_submit_button("UPLOAD!")
-    # uploaded_file = st.file_uploader("Choose images or PDFs...", type=["jpg", "jpeg", "png", "pdf"],
-    #                                  accept_multiple_files=False, key=st.session_state.upload_key)
+
     if uploaded_file:
         file = upload_single_file(uploaded_file)
         display_file_with_thumbnail(file)
@@ -333,8 +332,6 @@ if st.session_state.logged_in:
             if file_extension in ["jpg", "jpeg", "png"]:
                 st.write('I am an image')
             elif file_extension == "pdf":
-                st.write('I am a pdf')
-
                 blob_path = file['blob']
                 parts = blob_path.split(',')
                 blob_path = parts[1].strip()
@@ -345,7 +342,6 @@ if st.session_state.logged_in:
                 if st.button("Chat to AI", key=f"chat_{file['url']}"):
                     pdf_parse_content(pdf_bytes)
                 if st.button("Get Summary", key=f"chat_summary_{file['url']}"):
-                    uploaded_file = None
                     st.write('getting sum')
                     #get_summary(pdf_bytes, file['filename'])
 else:
