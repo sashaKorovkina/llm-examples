@@ -16,14 +16,22 @@ st.title("Chat To AI")
 if st.session_state.logged_in:
     api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
     if api_key:
-        if 'chat_file_name' in st.session_state:
-            chat_file_name = st.session_state['chat_file_name']
-            pdf_images = st.session_state['pdf_images']
-            pdf_texts = st.session_state['pdf_texts']
-            file_name = st.session_state['file_name']
-            st.write("Starting chat session FOR:", chat_file_name)
-            if pdf_texts:
-                accumulated_text = '\n'.join(pdf_texts)
+        if 'chats' not in st.session_state:
+            st.session_state.chats = []
+
+        if st.button('Add Chat'):
+            new_chat_name = f"Chat {len(st.session_state.chats) + 1}"
+            st.session_state.chats.append({
+                'name': new_chat_name,
+                'pdf_images': [],
+                'pdf_texts': [],
+                'file_name': '',
+            })
+
+        for chat in st.session_state.chats:
+            st.write(f"Starting chat session FOR: {chat['name']}")
+            if chat['pdf_texts']:
+                accumulated_text = '\n'.join(chat['pdf_texts'])
                 st.write(accumulated_text)
             else:
                 st.write("No text was extracted from the PDF, or the list is empty.")
@@ -40,14 +48,14 @@ if st.session_state.logged_in:
             docsearch = FAISS.from_texts(texts, embeddings)
             chain = load_qa_chain(OpenAI(openai_api_key=api_key), chain_type="stuff")
 
-            query = st.text_input("Enter your query:")
+            query = st.text_input(f"Enter your query for {chat['name']}:")
 
             if query:
                 docs = docsearch.similarity_search(query)
                 result = chain.run(input_documents=docs, question=query)
 
-                # Display the result
-                st.write("Result:")
+                # Display the result for each chat
+                st.write(f"Result for {chat['name']}:")
                 st.write(result)
 else:
     st.write('Please register or login to continue.')
