@@ -26,24 +26,25 @@ if st.session_state.logged_in:
 
     if 'username' in st.session_state:
         username = st.session_state['username']
+        st.write(username)
         chats_ref = db.collection('users').document(username).collection('chats')
+        chats = chats_ref.get()
+        chats_all = [chat.to_dict() for chat in chats]
+        st.write(chats_all)
 
-        # Fetch all chat documents
-        docs = chats_ref.stream()
-
-        with st.sidebar:
-            for doc in docs:
-                chat_data = doc.to_dict()
-                chat_file_name = chat_data.get('filename', 'Unknown Filename')
-
-                # Display the chat file name in the sidebar if it's not already there
-                if chat_file_name not in st.session_state.sidebar_chats:
-                    st.text(chat_file_name)
-                    # Add the chat file name to the list to avoid future duplicates
-                    st.session_state.sidebar_chats.append(chat_file_name)
-
-        if 'chat_file_name' in st.session_state:
-            st.write("Starting chat session FOR:", st.session_state['chat_file_name'])
+        # with st.sidebar:
+        #     for doc in docs:
+        #         chat_data = doc.to_dict()
+        #         chat_file_name = chat_data.get('filename', 'Unknown Filename')
+        #
+        #         # Display the chat file name in the sidebar if it's not already there
+        #         if chat_file_name not in st.session_state.sidebar_chats:
+        #             st.text(chat_file_name)
+        #             # Add the chat file name to the list to avoid future duplicates
+        #             st.session_state.sidebar_chats.append(chat_file_name)
+        #
+        # if 'chat_file_name' in st.session_state:
+        #     st.write("Starting chat session FOR:", st.session_state['chat_file_name'])
     else:
         st.write('Please register or login to continue.')
 
