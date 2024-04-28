@@ -307,16 +307,17 @@ if st.session_state.logged_in:
     api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
     username = st.session_state.username
 
+    files = get_existing_files()
+    existing_file_names = [file['filename'] for file in files]  # List of existing file names
+
     with st.form("my-form", clear_on_submit=True):
         uploaded_file = st.file_uploader("FILE UPLOADER")
         submitted = st.form_submit_button("UPLOAD!")
 
-        if uploaded_file:
+        if uploaded_file and uploaded_file.name not in existing_file_names:
             file = upload_single_file(uploaded_file)
             display_file_with_thumbnail(file)
-        uploaded_file = None
-
-    files = get_existing_files()
+            uploaded_file = None  # Clear the uploaded file after handling
 
     if files:
         st.write(f'All files are:')
