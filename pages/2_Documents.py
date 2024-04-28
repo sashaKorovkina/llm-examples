@@ -290,15 +290,17 @@ if st.session_state.logged_in:
     if uploaded_file:
         st.write('uploading new file!')
         thumbnail_stream = None
-        st.write(uploaded_file.name)
-        for file in files:
-            st.write(file['filename'])
         if uploaded_file.type.startswith('image/'):
             thumbnail_stream = create_thumbnail(uploaded_file, uploaded_file.type.split('/')[-1])
         elif uploaded_file.type.startswith('application/pdf'):
             thumbnail_stream = pdf_page_to_image(uploaded_file.getvalue())
 
-        upload_file(uploaded_file, thumbnail_stream)
+        if any(file['filename'] == filename for file in files):
+            st.error(f"A file named '{filename}' already exists. Please upload a different file.")
+        else:
+            st.write('Uploading new file!')
+            thumbnail_stream = None
+            upload_file(uploaded_file, thumbnail_stream)
 
         if thumbnail_stream is not None:
             with contextlib.closing(thumbnail_stream):
