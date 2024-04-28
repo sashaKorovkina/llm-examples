@@ -24,26 +24,28 @@ if st.session_state.logged_in:
     if 'sidebar_chats' not in st.session_state:
         st.session_state.sidebar_chats = []
 
-    if 'chat_file_name' in st.session_state:
-        chat_file_name = st.session_state['chat_file_name']
-        pdf_images = st.session_state['pdf_images']
-        pdf_texts = st.session_state['pdf_texts']
-        file_name = st.session_state['file_name']
+    if 'username' in st.session_state:
         username = st.session_state['username']
+        chats_ref = db.collection('users').document(username).collection('chats')
 
-        doc_ref = db.collection('users').document(username).collection('chats').document()
-        doc_ref.set({
-            'filename': file_name
-        })
+        # Fetch all chat documents
+        docs = chats_ref.stream()
 
-        # Add the chat file name to the sidebar if it's not already there
-        if chat_file_name not in st.session_state.sidebar_chats:
-            with st.sidebar:
-                st.text(chat_file_name)
-            # Add the chat file name to the list to avoid future duplicates
-            st.session_state.sidebar_chats.append(chat_file_name)
+        with st.sidebar:
+            for doc in docs:
+                chat_data = doc.to_dict()
+                chat_file_name = chat_data.get('filename', 'Unknown Filename')
 
-        st.write("Starting chat session FOR:", chat_file_name)
+                # Display the chat file name in the sidebar if it's not already there
+                if chat_file_name not in st.session_state.sidebar_chats:
+                    st.text(chat_file_name)
+                    # Add the chat file name to the list to avoid future duplicates
+                    st.session_state.sidebar_chats.append(chat_file_name)
+
+        if 'chat_file_name' in st.session_state:
+            st.write("Starting chat session FOR:", st.session_state['chat_file_name'])
+    else:
+        st.write('Please register or login to continue.')
 
 # if st.session_state.logged_in:
 #     api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
