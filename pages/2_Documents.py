@@ -48,6 +48,7 @@ def save_uploaded_file(uploaded_file, target_path):
         f.write(uploaded_file.getbuffer())
 
 def send_image_to_openai(base64_image, api_key, key):
+    st.write(api_key)
     headers = {
       "Content-Type": "application/json",
       "Authorization": f"Bearer {api_key}"
