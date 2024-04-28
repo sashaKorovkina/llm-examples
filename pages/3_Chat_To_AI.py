@@ -21,10 +21,16 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
 
         selected_chat_name = st.sidebar.radio("Select a Chat:", chat_names)
 
-        for chat in chats_all:
-            if chat['filename'] == selected_chat_name:
-                st.write(f"Starting chat session FOR: {chat['filename']}")
+        selected_chat_data = next((chat for chat in chats_all if chat['filename'] == selected_chat_name), None)
 
+        if selected_chat_data:
+            # Example of displaying detailed information from the selected chat
+            st.write(f"Starting chat session FOR: {selected_chat_data['filename']}")
+            if 'messages' in selected_chat_data:
+                st.write("Messages:")
+                for message in selected_chat_data['messages']:
+                    st.write(message)  # Assuming 'message' is a string or a dictionary
+            # Add more fields as necessary based on your data structure
 else:
     st.write('Please register or login to continue.')
 
