@@ -335,9 +335,7 @@ if st.session_state.logged_in:
 
                 blob = bucket.blob(blob_path)
                 image_bytes = blob.download_as_bytes()
-
-                if st.button("Chat to AI", key=f"chat_{file['url']}"):
-                    send_image_to_openai(image_bytes)
+                send_image_to_openai(image_bytes)
             elif file_extension == "pdf":
                 blob_path = file['blob']
                 parts = blob_path.split(',')
