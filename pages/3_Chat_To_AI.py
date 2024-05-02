@@ -12,6 +12,7 @@ db = firestore.client()
 
 # FUNCTIONS
 def response_func(prompt, text):
+    text = str(text)
     text_splitter = CharacterTextSplitter(
         separator="\n",
         chunk_size=1000,
