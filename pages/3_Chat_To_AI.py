@@ -23,7 +23,7 @@ def response_func(prompt, text):
     embeddings = OpenAIEmbeddings(openai_api_key = api_key)
     knowledge_base = FAISS.from_texts(chunks, embeddings)
     docs = knowledge_base.similarity_search(prompt)
-    llm = OpenAI()
+    llm = OpenAI(openai_api_key = api_key)
     chain = load_qa_chain(llm, chain_type="stuff")
     with get_openai_callback() as cb:
         result = chain.run(input_documents=docs, question=prompt)
