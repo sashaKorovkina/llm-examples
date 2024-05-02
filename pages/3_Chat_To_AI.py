@@ -30,7 +30,7 @@ def response_func(prompt, text):
     return result
 
 def display_messages(chat_id):
-    messages = db.collection('users').document("username").collection('chats').document(chat_id).collection(
+    messages = db.collection('users').document(username).collection('chats').document(chat_id).collection(
         'messages').stream()
 
     # Display messages directly without using session state
