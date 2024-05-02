@@ -29,19 +29,16 @@ def response_func(prompt, text):
         result = chain.run(input_documents=docs, question=prompt)
     return result
 
-def fetch_messages(chat_id):
-    # Fetch messages from Firestore
-    messages_ref = db.collection('users').document('username').collection('chats').document(chat_id).collection('messages')
-    messages = messages_ref.get()  # Ensure that 'timestamp' is a field set when messages are stored
-    return [(msg.get('message_user'), msg.get('message_ai')) for msg in messages]
+def display_messages(chat_id):
+    # Stream messages from Firestore
+    messages = db.collection('users').document("username").collection('chats').document(chat_id).collection('messages').order_by("timestamp").stream()
+    for message in messages:
+        role = 'user' if message.get('message_user') else 'assistant'
+        content = message.get('message_user') or message.get('message_ai')
+        # Update session state with messages if not already present
+        if {'role': role, 'content': content} not in st.session_state.messages:
+            st.session_state.messages.append({"role": role, "content": content})
 
-def display_messages(messages):
-    # Display each message in Streamlit
-    st.write(str(messages))
-    # for user_msg, ai_msg in messages:
-    #     with st.container():
-    #         st.write(f"You: {user_msg}")
-    #         st.write(f"Assistant: {ai_msg}")
 
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
