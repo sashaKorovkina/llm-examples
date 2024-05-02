@@ -27,8 +27,6 @@ def response_func(prompt, text):
     chain = load_qa_chain(llm, chain_type="stuff")
     with get_openai_callback() as cb:
         result = chain.run(input_documents=docs, question=prompt)
-
-    st.write(result)
     return result
 
 if 'logged_in' not in st.session_state:
@@ -63,7 +61,6 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
             #         st.markdown(message["content"])
             if prompt := st.chat_input("What is up?"):
                 with st.chat_message("user"):
-                    st.markdown(api_key)
                     st.markdown(prompt)
                 st.session_state.messages.append({"role": "user", "content": prompt})
                 response = response_func(prompt, selected_chat_data['pdf_text'])
