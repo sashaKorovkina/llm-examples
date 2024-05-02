@@ -32,7 +32,7 @@ def response_func(prompt, text):
 def display_messages(chat_id):
     # Stream messages from Firestore and order them by timestamp
     messages = db.collection('users').document("username").collection('chats').document(chat_id).collection(
-        'messages').order_by("timestamp").stream()
+        'messages').stream()
 
     # Display messages directly without using session state
     for message in messages:
@@ -66,16 +66,9 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
         if selected_chat_data:
             st.write(f"Starting chat session FOR: {selected_chat_data['filename']}")
             st.write(f"The id in the selected file is: {selected_chat_data['chat_id']}")
-            display_messages(selected_chat_data['chat_id'])
-
-            if "messages" not in st.session_state:
-                st.session_state.messages = []
-
-            for message in st.session_state.messages:
-                with st.chat_message(message["role"]):
-                    st.markdown(message["content"])
 
             if prompt := st.chat_input("What is up?"):
+                display_messages(selected_chat_data['chat_id'])
                 chat_id = selected_chat_data['chat_id']
                 with st.chat_message("user"):
                     st.markdown(prompt)
