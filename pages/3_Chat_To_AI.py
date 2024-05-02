@@ -35,18 +35,15 @@ def display_messages(chat_id, username):
     messages = db.collection('users').document(username).collection('chats').document(chat_id).collection(
         'messages').stream()
 
-    # Display messages directly without using session state
+    # Display messages using Streamlit's chat message format
     for message in messages:
-        # Check the fields in each message document
         if 'message_user' in message.to_dict() and message.get('message_user'):
-            # Display user message
-            with st.container():
-                st.markdown(f"**User**: {message.get('message_user')}")
+            with st.chat_message("user"):
+                st.markdown(message.get('message_user'))
 
         if 'message_ai' in message.to_dict() and message.get('message_ai'):
-            # Display AI message
-            with st.container():
-                st.markdown(f"**Assistant**: {message.get('message_ai')}")
+            with st.chat_message("assistant"):
+                st.markdown(message.get('message_ai'))
 
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
