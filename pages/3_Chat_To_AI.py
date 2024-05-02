@@ -39,7 +39,7 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
     api_key = st.text_input("OpenAI API Key", key="file_docs_api_key", type="password")
     if 'username' in st.session_state:
         username = st.session_state['username']
-        st.write(f"Logged in as: {username}")
+        # st.write(f"Logged in as: {username}")
 
         chats_ref = db.collection('users').document(username).collection('chats')
         chats = chats_ref.get()
