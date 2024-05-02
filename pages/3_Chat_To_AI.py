@@ -29,19 +29,24 @@ def response_func(prompt, text):
         result = chain.run(input_documents=docs, question=prompt)
     return result
 
-def display_messages(chat_id):
+
+def display_messages(chat_id, username):
+    # Fetch messages from Firestore
     messages = db.collection('users').document(username).collection('chats').document(chat_id).collection(
         'messages').stream()
 
     # Display messages directly without using session state
     for message in messages:
-        role = 'user' if message.get('message_user') else 'assistant'
-        content = message.get('message_user') or message.get('message_ai')
+        # Check the fields in each message document
+        if 'message_user' in message.to_dict() and message.get('message_user'):
+            # Display user message
+            with st.container():
+                st.markdown(f"**User**: {message.get('message_user')}")
 
-        # Display each message in Streamlit using appropriate formatting
-        with st.container():
-            st.markdown(f"{role.capitalize()}: {content}")
-
+        if 'message_ai' in message.to_dict() and message.get('message_ai'):
+            # Display AI message
+            with st.container():
+                st.markdown(f"**Assistant**: {message.get('message_ai')}")
 
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
