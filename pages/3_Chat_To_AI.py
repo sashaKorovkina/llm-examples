@@ -38,6 +38,7 @@ st.title("Chat To AI")
 
 # MAIN SCRIPT
 if 'logged_in' in st.session_state and st.session_state.logged_in:
+    api_key = st.text_input("OpenAI API Key", key="file_qa_api_key", type="password")
     if 'username' in st.session_state:
         username = st.session_state['username']
         st.write(f"Logged in as: {username}")
