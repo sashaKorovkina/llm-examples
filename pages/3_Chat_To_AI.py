@@ -29,6 +29,16 @@ def response_func(prompt, text):
         result = chain.run(input_documents=docs, question=prompt)
     return result
 
+def display_messages(chat_id):
+    messages = db.collection('users').document("username").collection('chats').document(chat_id).collection('messages').stream()
+    for message in messages:
+        user_message = message.get('message_user')
+        ai_message = message.get('message_ai')
+        if user_message:
+            st.text_area("User", value=user_message, height=100, disabled=True)
+        if ai_message:
+            st.text_area("Assistant", value=ai_message, height=100, disabled=True)
+
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 
@@ -49,20 +59,21 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
         selected_chat_data = next((chat for chat in chats_all if chat['filename'] == selected_chat_name), None)
 
         if selected_chat_data:
+            display_messages(selected_chat_data['chat_id'])
             st.write(f"Starting chat session FOR: {selected_chat_data['filename']}")
             st.write(f"The text in the selected file is: {selected_chat_data['pdf_text']}")
             st.write(f"The id in the selected file is: {selected_chat_data['chat_id']}")
 
             if prompt := st.chat_input("What is up?"):
                 chat_id = selected_chat_data['chat_id']
-                doc_ref = db.collection('users').document(username).collection('chats').document(chat_id).collection('messages').document()
                 with st.chat_message("user"):
                     st.markdown(prompt)
                 st.session_state.messages.append({"role": "user", "content": prompt})
                 response = response_func(prompt, selected_chat_data['pdf_text'])
                 with st.chat_message("assistant"):
                     st.markdown(response)
-
+                doc_ref = db.collection('users').document(username).collection('chats').document(chat_id).collection(
+                    'messages').document()
                 doc_ref.set({
                     'message_user': prompt,
                     'message_ai' : response
