@@ -257,7 +257,8 @@ def pdf_parse_content(pdf_bytes):
     doc_ref = db.collection('users').document(username).collection('chats').document()
     doc_ref.set({
         'filename': file['filename'],
-        'pdf_text': pdf_texts
+        'pdf_text': pdf_texts,
+        'chat_id' : uuid
     })
 
     nav_page("chat_to_ai")
