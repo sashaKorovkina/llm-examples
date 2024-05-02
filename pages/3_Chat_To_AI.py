@@ -53,7 +53,7 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
             st.session_state.messages = []
 
         if selected_chat_data:
-            st.write(str(selected_chat_data))
+            st.write(chats_ref)
             st.write(f"Starting chat session FOR: {selected_chat_data['filename']}")
             st.write(f"The text in the selected file is: {selected_chat_data['pdf_text']}")
             # Display chat messages from history on app rerun
@@ -61,7 +61,7 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
             #     with st.chat_message(message["role"]):
             #         st.markdown(message["content"])
             if prompt := st.chat_input("What is up?"):
-                # doc_ref = db.collection('users').document(username).collection('chats').document(chat)
+                doc_ref = db.collection('users').document(username).collection('chats').document(chats_ref)
                 # doc_ref.set({
                 #     'filename': file['filename'],
                 #     'pdf_text': pdf_texts
