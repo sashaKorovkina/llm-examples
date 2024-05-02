@@ -11,8 +11,24 @@ from langchain.callbacks import get_openai_callback
 db = firestore.client()
 
 # FUNCTIONS
-def response_func(prompt):
-    return prompt
+def response_func(prompt, text):
+    text_splitter = CharacterTextSplitter(
+        separator="\n",
+        chunk_size=1000,
+        chunk_overlap=200,
+        length_function=len
+    )
+    chunks = text_splitter.split_text(text)
+    embeddings = OpenAIEmbeddings()
+    knowledge_base = FAISS.from_texts(chunks, embeddings)
+    docs = knowledge_base.similarity_search(prompt)
+    llm = OpenAI()
+    chain = load_qa_chain(llm, chain_type="stuff")
+    with get_openai_callback() as cb:
+        result = chain.run(input_documents=docs, question=prompt)
+
+    st.write(result)
+    return result
 
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
@@ -38,7 +54,7 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
 
         if selected_chat_data:
             st.write(f"Starting chat session FOR: {selected_chat_data['filename']}")
-            st.write(f"The text in the selected file is: {selected_chat_data['pdf_text']}")
+            st.write(f"The text in the selected file is: {}")
             # Display chat messages from history on app rerun
             # for message in st.session_state.messages:
             #     with st.chat_message(message["role"]):
@@ -47,7 +63,7 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
                 with st.chat_message("user"):
                     st.markdown(prompt)
                 st.session_state.messages.append({"role": "user", "content": prompt})
-                response = response_func(prompt)
+                response = response_func(prompt, selected_chat_data['pdf_text'])
                 with st.chat_message("assistant"):
                     st.markdown(response)
                 st.session_state.messages.append({"role": "assistant", "content": response})
