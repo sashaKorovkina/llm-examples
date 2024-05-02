@@ -253,12 +253,14 @@ def pdf_parse_content(pdf_bytes):
     st.session_state['file_name'] = file['filename']
     st.session_state['chat_file_name'] = file['filename']
 
+    chat_id = uuid.uuid4().hex
+
     #adding chat to db
     doc_ref = db.collection('users').document(username).collection('chats').document()
     doc_ref.set({
         'filename': file['filename'],
         'pdf_text': pdf_texts,
-        'chat_id' : uuid
+        'chat_id' : chat_id
     })
 
     nav_page("chat_to_ai")
