@@ -54,7 +54,7 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
 
         if selected_chat_data:
             st.write(f"Starting chat session FOR: {selected_chat_data['filename']}")
-            st.write(f"The text in the selected file is: {}")
+            st.write(f"The text in the selected file is: {selected_chat_data['pdf_text']}")
             # Display chat messages from history on app rerun
             # for message in st.session_state.messages:
             #     with st.chat_message(message["role"]):
