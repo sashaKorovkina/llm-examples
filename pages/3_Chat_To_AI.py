@@ -1,7 +1,18 @@
 import streamlit as st
 from firebase_admin import firestore, storage
+import streamlit as st
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores import FAISS
+from langchain.chains.question_answering import load_qa_chain
+from langchain.llms import OpenAI
+from langchain.callbacks import get_openai_callback
 
 db = firestore.client()
+
+# FUNCTIONS
+def response_func(prompt):
+    return prompt
 
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
@@ -36,7 +47,7 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
                 with st.chat_message("user"):
                     st.markdown(prompt)
                 st.session_state.messages.append({"role": "user", "content": prompt})
-                response = f"Echo: {prompt}"
+                response = response_func(prompt)
                 with st.chat_message("assistant"):
                     st.markdown(response)
                 st.session_state.messages.append({"role": "assistant", "content": response})
