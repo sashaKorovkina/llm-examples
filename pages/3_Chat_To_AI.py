@@ -65,7 +65,6 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
 
         if selected_chat_data:
             st.write(f"Starting chat session FOR: {selected_chat_data['filename']}")
-            st.write(f"The text in the selected file is: {selected_chat_data['pdf_text']}")
             st.write(f"The id in the selected file is: {selected_chat_data['chat_id']}")
             display_messages(selected_chat_data['chat_id'])
 
