@@ -30,14 +30,18 @@ def response_func(prompt, text):
     return result
 
 def display_messages(chat_id):
-    # Stream messages from Firestore
-    messages = db.collection('users').document("username").collection('chats').document(chat_id).collection('messages').order_by("timestamp").stream()
+    # Stream messages from Firestore and order them by timestamp
+    messages = db.collection('users').document("username").collection('chats').document(chat_id).collection(
+        'messages').order_by("timestamp").stream()
+
+    # Display messages directly without using session state
     for message in messages:
         role = 'user' if message.get('message_user') else 'assistant'
         content = message.get('message_user') or message.get('message_ai')
-        # Update session state with messages if not already present
-        if {'role': role, 'content': content} not in st.session_state.messages:
-            st.session_state.messages.append({"role": role, "content": content})
+
+        # Display each message in Streamlit using appropriate formatting
+        with st.container():
+            st.markdown(f"{role.capitalize()}: {content}")
 
 
 if 'logged_in' not in st.session_state:
@@ -60,10 +64,10 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
         selected_chat_data = next((chat for chat in chats_all if chat['filename'] == selected_chat_name), None)
 
         if selected_chat_data:
-            display_messages(selected_chat_data['chat_id'])
             st.write(f"Starting chat session FOR: {selected_chat_data['filename']}")
             st.write(f"The text in the selected file is: {selected_chat_data['pdf_text']}")
             st.write(f"The id in the selected file is: {selected_chat_data['chat_id']}")
+            display_messages(selected_chat_data['chat_id'])
 
             if "messages" not in st.session_state:
                 st.session_state.messages = []
