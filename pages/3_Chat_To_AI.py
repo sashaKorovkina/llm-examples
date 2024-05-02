@@ -20,7 +20,7 @@ def response_func(prompt, text):
         length_function=len
     )
     chunks = text_splitter.split_text(text)
-    embeddings = OpenAIEmbeddings(api_key)
+    embeddings = OpenAIEmbeddings(openai_api_key = api_key)
     knowledge_base = FAISS.from_texts(chunks, embeddings)
     docs = knowledge_base.similarity_search(prompt)
     llm = OpenAI()
