@@ -33,9 +33,9 @@ def display_messages(chat_id):
     messages = db.collection('users').document("username").collection('chats').document(chat_id).collection(
         'messages').stream()
 
-    st.write(str(messages))
     # Display messages directly without using session state
     for message in messages:
+        st.write(str(message))
         role = 'user' if message.get('message_user') else 'assistant'
         content = message.get('message_user') or message.get('message_ai')
 
