@@ -37,10 +37,11 @@ def fetch_messages(chat_id):
 
 def display_messages(messages):
     # Display each message in Streamlit
-    for user_msg, ai_msg in messages:
-        with st.container():
-            st.write(f"You: {user_msg}")
-            st.write(f"Assistant: {ai_msg}")
+    st.write(str(messages))
+    # for user_msg, ai_msg in messages:
+    #     with st.container():
+    #         st.write(f"You: {user_msg}")
+    #         st.write(f"Assistant: {ai_msg}")
 
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
