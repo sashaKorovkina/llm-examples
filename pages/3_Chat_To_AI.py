@@ -61,7 +61,7 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
             #     with st.chat_message(message["role"]):
             #         st.markdown(message["content"])
             if prompt := st.chat_input("What is up?"):
-                doc_ref = db.collection('users').document(username).collection('chats').document(chats_ref)
+                # doc_ref = db.collection('users').document(username).collection('chats').document(chats_ref)
                 # doc_ref.set({
                 #     'filename': file['filename'],
                 #     'pdf_text': pdf_texts
