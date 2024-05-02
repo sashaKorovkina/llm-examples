@@ -68,6 +68,13 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
             st.write(f"The text in the selected file is: {selected_chat_data['pdf_text']}")
             st.write(f"The id in the selected file is: {selected_chat_data['chat_id']}")
 
+            if "messages" not in st.session_state:
+                st.session_state.messages = []
+
+            for message in st.session_state.messages:
+                with st.chat_message(message["role"]):
+                    st.markdown(message["content"])
+
             if prompt := st.chat_input("What is up?"):
                 chat_id = selected_chat_data['chat_id']
                 with st.chat_message("user"):
