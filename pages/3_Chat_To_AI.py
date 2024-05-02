@@ -55,7 +55,7 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
 
             if prompt := st.chat_input("What is up?"):
                 chat_id = selected_chat_data['chat_id']
-                doc_ref = db.collection('users').document(username).collection('chats').document(chat_id).collection('messages')
+                doc_ref = db.collection('users').document(username).collection('chats').document(chat_id).collection('messages').document()
                 doc_ref.set({
                     'message_user': prompt
                 })
