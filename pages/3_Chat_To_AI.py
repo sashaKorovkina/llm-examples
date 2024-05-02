@@ -29,20 +29,16 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
             st.write(f"Starting chat session FOR: {selected_chat_data['filename']}")
             st.write(f"The text in the selected file is: {selected_chat_data['pdf_text']}")
             # Display chat messages from history on app rerun
-            for message in st.session_state.messages:
-                with st.chat_message(message["role"]):
-                    st.markdown(message["content"])
+            # for message in st.session_state.messages:
+            #     with st.chat_message(message["role"]):
+            #         st.markdown(message["content"])
             if prompt := st.chat_input("What is up?"):
-                # Display user message in chat message container
                 with st.chat_message("user"):
                     st.markdown(prompt)
-                # Add user message to chat history
                 st.session_state.messages.append({"role": "user", "content": prompt})
                 response = f"Echo: {prompt}"
-                # Display assistant response in chat message container
                 with st.chat_message("assistant"):
                     st.markdown(response)
-                # Add assistant response to chat history
                 st.session_state.messages.append({"role": "assistant", "content": response})
 
 else:
