@@ -262,7 +262,7 @@ def pdf_parse_content(pdf_bytes):
         'filename': file['filename'],
         'pdf_text': pdf_texts,
         'chat_id' : chat_id,
-        'file_d' : file['doc_id']
+        'file_id' : file['doc_id']
     })
 
     nav_page("chat_to_ai")
