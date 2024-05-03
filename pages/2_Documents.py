@@ -282,14 +282,14 @@ def upload_file(uploaded_file, thumbnail_stream):
     url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
 
     doc_ref = db.collection('users').document(username).collection('documents').document()
-    st.write(doc_ref.id)
     doc_ref.set({
         'filename': uploaded_file.name,
         'content_type': uploaded_file.type,
         'url': url,
         'blob': str(blob),
         'thumbnail_url': thumb_url,
-        'uploaded_at': firestore.SERVER_TIMESTAMP
+        'uploaded_at': firestore.SERVER_TIMESTAMP,
+        'doc_id': doc_ref.id
     })
 
     return doc_ref.get().to_dict()
