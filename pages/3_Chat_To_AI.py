@@ -7,6 +7,7 @@ from langchain.vectorstores import FAISS
 from langchain.chains.question_answering import load_qa_chain
 from langchain.llms import OpenAI
 from langchain.callbacks import get_openai_callback
+import datetime
 
 db = firestore.client()
 
@@ -80,7 +81,8 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
                     'messages').document()
                 doc_ref.set({
                     'message_user': prompt,
-                    'message_ai' : response
+                    'message_ai' : response,
+                    'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat()
                 })
 
                 st.session_state.messages.append({"role": "assistant", "content": response})
