@@ -301,9 +301,12 @@ def delete_file(username, file_id):
     try:
         # Document reference
         doc_ref = db.collection('users').document(username).collection('documents').document(file_id)
+        chats_ref = db.collection('users').document(username).collection('documents').document(file_id).collection(
+            'chats')
+        chats = chats_ref.stream()
+        for chat in chats:
+            chat.reference.delete()
         doc_ref.delete()
-        chat_ref = db.collection('users').document(username).collection('documents').document(file_id)
-        st.write(f"File with ID {file_id} deleted successfully.")
     except Exception as e:
         st.write(f"An error occurred while trying to delete the file: {e}")
 
