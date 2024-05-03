@@ -34,7 +34,7 @@ def response_func(prompt, text):
 def display_messages(chat_id, username):
     # Fetch messages from Firestore
     messages = db.collection('users').document(username).collection('chats').document(chat_id).collection(
-        'messages').stream()
+        'messages').order_by("timestamp").stream()
 
     # Display messages using Streamlit's chat message format
     for message in messages:
