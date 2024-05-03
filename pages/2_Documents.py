@@ -307,6 +307,7 @@ def delete_file(username, file_id):
         for chat in chats:
             chat.reference.delete()
         doc_ref.delete()
+        st.write('Deleted successfully')
     except Exception as e:
         st.write(f"An error occurred while trying to delete the file: {e}")
 
