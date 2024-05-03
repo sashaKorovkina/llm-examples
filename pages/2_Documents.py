@@ -282,6 +282,7 @@ def upload_file(uploaded_file, thumbnail_stream):
     url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(minutes=10000), method='GET')
 
     doc_ref = db.collection('users').document(username).collection('documents').document()
+    st.write(doc_ref.id)
     doc_ref.set({
         'filename': uploaded_file.name,
         'content_type': uploaded_file.type,
