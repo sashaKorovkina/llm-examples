@@ -300,7 +300,6 @@ def delete_file(username, file_id):
         # Document reference
         doc_ref = db.collection('users').document(username).collection('documents').document(file_id)
         doc_ref.delete()
-        st.experimental_rerun()
         st.write(f"File with ID {file_id} deleted successfully.")
     except Exception as e:
         st.write(f"An error occurred while trying to delete the file: {e}")
