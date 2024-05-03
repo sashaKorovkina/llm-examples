@@ -294,6 +294,7 @@ def upload_file(uploaded_file, thumbnail_stream):
     return doc_ref.get().to_dict()
 
 def delete_file(username, file_id):
+    st.write(f"Trying to delete...")
     try:
         # Document reference
         doc_ref = db.collection('users').document(username).collection('documents').document(file_id)
