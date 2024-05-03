@@ -85,8 +85,6 @@ if 'logged_in' in st.session_state and st.session_state.logged_in:
                     'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat()
                 })
 
-                st.session_state.messages.append({"role": "assistant", "content": response})
-
 else:
     st.write('Please register or login to continue.')
 
