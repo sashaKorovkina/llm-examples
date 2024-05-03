@@ -293,6 +293,16 @@ def upload_file(uploaded_file, thumbnail_stream):
 
     return doc_ref.get().to_dict()
 
+def delete_file(username, file_id):
+    try:
+        # Document reference
+        doc_ref = db.collection('users').document(username).collection('documents').document(file_id)
+        # Delete the document
+        doc_ref.delete()
+        print(f"File with ID {file_id} deleted successfully.")
+    except Exception as e:
+        print(f"An error occurred while trying to delete the file: {e}")
+
 def display_file_with_thumbnail(file):
     if file.get('thumbnail_url'):
         st.image(file['thumbnail_url'], caption=file['filename'], width=300)
@@ -356,5 +366,9 @@ if st.session_state.logged_in:
                     pdf_parse_content(pdf_bytes)
                 if st.button("Get Summary", key=f"chat_summary_{file['url']}"):
                     get_summary(pdf_bytes, file['filename'])
+            if st.button("Delete", key=f"delete_{file['url']}"):
+                delete_file(file['url'])  # Function to delete the file
+                st.experimental_rerun()
+
 else:
     st.write('Register please.')
