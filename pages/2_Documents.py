@@ -300,6 +300,7 @@ def delete_file(username, file_id):
         # Document reference
         doc_ref = db.collection('users').document(username).collection('documents').document(file_id)
         doc_ref.delete()
+        st.experimental_rerun()
         st.write(f"File with ID {file_id} deleted successfully.")
     except Exception as e:
         st.write(f"An error occurred while trying to delete the file: {e}")
@@ -358,7 +359,6 @@ if st.session_state.logged_in:
         for file in files:
             display_file_with_thumbnail(file)
             if st.button("Delete", key=f"delete_{file['url']}"):
-                st.write(file['doc_id'])
                 delete_file(username, file['doc_id'])  # Function to delete the file
             file_extension = file['filename'].split(".")[-1].lower()
             if file_extension in ["jpg", "jpeg", "png"]:
