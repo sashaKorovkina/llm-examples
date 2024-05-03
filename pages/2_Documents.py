@@ -252,6 +252,7 @@ def pdf_parse_content(pdf_bytes):
     st.session_state['pdf_texts'] = pdf_texts
     st.session_state['file_name'] = file['filename']
     st.session_state['chat_file_name'] = file['filename']
+    st.session_state['doc_id'] = file['doc_id']
 
     chat_id = uuid.uuid4().hex
 
@@ -260,7 +261,8 @@ def pdf_parse_content(pdf_bytes):
     doc_ref.set({
         'filename': file['filename'],
         'pdf_text': pdf_texts,
-        'chat_id' : chat_id
+        'chat_id' : chat_id,
+        'file_d' : file['doc_id']
     })
 
     nav_page("chat_to_ai")
@@ -300,6 +302,7 @@ def delete_file(username, file_id):
         # Document reference
         doc_ref = db.collection('users').document(username).collection('documents').document(file_id)
         doc_ref.delete()
+        chat_ref = db.collection('users').document(username).collection('documents').document(file_id)
         st.write(f"File with ID {file_id} deleted successfully.")
     except Exception as e:
         st.write(f"An error occurred while trying to delete the file: {e}")
