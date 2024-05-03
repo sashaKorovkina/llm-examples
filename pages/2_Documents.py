@@ -302,8 +302,7 @@ def delete_file(username, file_id):
         # Document reference
         doc_ref = db.collection('users').document(username).collection('documents').document(file_id)
         # the file id here needs to be replaced by the chat_id
-        chats_ref = db.collection('users').document(username).collection('chats').document(file_id).collection(
-            'chats')
+        chats_ref = db.collection('users').document(username).collection('chats').document(file_id)
         chats = chats_ref.stream()
         for chat in chats:
             chat.reference.delete()
