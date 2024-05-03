@@ -356,6 +356,7 @@ if st.session_state.logged_in:
         st.write(f'All files are:')
 
         for file in files:
+            st.write(file)
             display_file_with_thumbnail(file)
             if st.button("Delete", key=f"delete_{file['url']}"):
                 delete_file(username, file['url'])  # Function to delete the file
