@@ -297,11 +297,10 @@ def delete_file(username, file_id):
     try:
         # Document reference
         doc_ref = db.collection('users').document(username).collection('documents').document(file_id)
-        # Delete the document
         doc_ref.delete()
-        print(f"File with ID {file_id} deleted successfully.")
+        st.write(f"File with ID {file_id} deleted successfully.")
     except Exception as e:
-        print(f"An error occurred while trying to delete the file: {e}")
+        st.write(f"An error occurred while trying to delete the file: {e}")
 
 def display_file_with_thumbnail(file):
     if file.get('thumbnail_url'):
