@@ -358,6 +358,7 @@ if st.session_state.logged_in:
         for file in files:
             display_file_with_thumbnail(file)
             if st.button("Delete", key=f"delete_{file['url']}"):
+                st.write(file['doc_id'])
                 delete_file(username, file['url'])  # Function to delete the file
             file_extension = file['filename'].split(".")[-1].lower()
             if file_extension in ["jpg", "jpeg", "png"]:
