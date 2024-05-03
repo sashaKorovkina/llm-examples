@@ -368,6 +368,5 @@ if st.session_state.logged_in:
                     get_summary(pdf_bytes, file['filename'])
             if st.button("Delete", key=f"delete_{file['url']}"):
                 delete_file(username, file['url'])  # Function to delete the file
-                st.experimental_rerun()
 else:
     st.write('Register please.')
