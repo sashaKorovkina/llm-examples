@@ -254,7 +254,7 @@ def pdf_parse_content(pdf_bytes):
     st.session_state['chat_file_name'] = file['filename']
     st.session_state['doc_id'] = file['doc_id']
 
-    chat_id = uuid.uuid4().hex
+    chat_id = file['doc_id']
 
     #adding chat to db
     doc_ref = db.collection('users').document(username).collection('chats').document(chat_id)
@@ -301,7 +301,8 @@ def delete_file(username, file_id):
     try:
         # Document reference
         doc_ref = db.collection('users').document(username).collection('documents').document(file_id)
-        chats_ref = db.collection('users').document(username).collection('documents').document(file_id).collection(
+        # the file id here needs to be replaced by the chat_id
+        chats_ref = db.collection('users').document(username).collection('chats').document(file_id).collection(
             'chats')
         chats = chats_ref.stream()
         for chat in chats:
