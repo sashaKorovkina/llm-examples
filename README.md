@@ -1,4 +1,4 @@
-# 🎈 Elmento AI
+# ⭐ Elmento AI
 
 Talk to your documents using AI. 
 
