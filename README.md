@@ -3,6 +3,7 @@
 Talk to your documents using AI. 
 
 Watch the demo on YouTube:
+
 [![Video Title](http://img.youtube.com/vi/p2US26T149Y/0.jpg)](http://www.youtube.com/watch?v=p2US26T149Y)
 
 
