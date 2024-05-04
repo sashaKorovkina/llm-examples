@@ -5,6 +5,7 @@ Talk to your documents using AI.
 <img width="916" alt="image" src="https://github.com/sashaKorovkina/llm-examples/assets/56770146/9031f988-e400-4989-ba45-89e54a7899c8">
 
 _Watch the demo on YouTube:_
+
 [![Video Title](http://img.youtube.com/vi/p2US26T149Y/0.jpg)](http://www.youtube.com/watch?v=p2US26T149Y)
 
 
