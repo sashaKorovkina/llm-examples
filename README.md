@@ -19,7 +19,7 @@ Current examples include:
 
 ## Demo App
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)]([https://llm-examples.streamlit.app/](https://elmento-dev.streamlit.app/Profile))
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)]((https://elmento-dev.streamlit.app/Profile))
 
 ### Get an OpenAI API key
 
