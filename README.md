@@ -24,3 +24,13 @@ You can get your own OpenAI API key by following the following instructions:
 1. Go to https://platform.openai.com/account/api-keys.
 2. Click on the `+ Create new secret key` button.
 3. Next, enter an identifier name (optional) and click on the `Create secret key` button.
+
+### Contributing:
+
+I would love to get more people on board with this project! There are just a few small things you need to do :)
+1. Fork the repository and clone it to your local machine.
+2. Make your desired changes or additions.
+3. Test your changes thoroughly.
+4. Submit a pull request with a clear description of your changes and their purpose.
+   
+
