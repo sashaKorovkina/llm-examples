@@ -1,21 +1,17 @@
-# 🎈 Streamlit + LLM Examples App
+# 🎈 Elmento AI
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/streamlit/llm-examples?quickstart=1)
-
-Starter examples for building LLM apps with Streamlit.
+Talk to your document using AI. 
 
 ## Overview of the App
 
-This app showcases a growing collection of LLM minimum working examples.
+This app is constantly developing to cover more models and file types. 
 
-Current examples include:
+At the moment, you can:
 
-- Chatbot
-- File Q&A
-- Chat with Internet search
-- LangChain Quickstart
-- LangChain PromptTemplate
-- Chat with user feedback
+- Upload PDF, JPG, JPEG and PNG files
+- PDF File - get a summary or ask AI any questions about your PDF 
+- Image - get a description of what is on the image
+- We keep a history of your files and chats for you to return to 
 
 ## Demo App
 
